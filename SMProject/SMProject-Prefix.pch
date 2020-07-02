@@ -26,19 +26,23 @@
 //#define LocationIp @"http://192.168.199.129:8080/Sanmoon/"
 //#define LocationIp @"http://192.168.199.188:8090/Sanmoon/"
 //#define LocationIp @"http://192.168.199.190:8090/CsSanmoon/"
-//版本更新的url
-//测试版
+
+
+//测试版//////////////////////////////
 //#define ReLocation @"https://ipad.sanmoon.net/version/cssanmoon/CSSMVersion.html"
 //#define LocationIp @"http://ipad.sanmoon.net:9999/CsSanmoon/"
 //#define RIP @"http://113.140.20.6/csgetdata/"
-//正式版
+//#define ReLocationPlist @"itms-services://?action=download-manifest&url=https://ipad.sanmoon.net/version/cssanmoon/CSSanmoon.plist";
+
+
+//正式版////////////////////////////
 #define ReLocation @"https://ipad.sanmoon.net/version/sanmoon/SMVersion.html"
 #define LocationIp @"http://ipad.sanmoon.net:9999/Sanmoon/"
 #define RIP @"http://113.140.20.6/getdata/"
-//plist文件地址(测试)
-//#define ReLocationPlist @"itms-services://?action=download-manifest&url=https://ipad.sanmoon.net/version/cssanmoon/CSSanmoon.plist";
-//plist文件地址（正式）
 #define ReLocationPlist @"itms-services://?action=download-manifest&url=https://ipad.sanmoon.net/version/sanmoon/Sanmoon.plist";
+
+
+
 #define MAINURL @"http://124.115.170.165:8080/Sanmoon1.0/"
 #define GETURL @"http://124.115.170.165:8080/Sanmoon1.0/findImagesLinkToIpad?comp.imagesIds="
 #endif

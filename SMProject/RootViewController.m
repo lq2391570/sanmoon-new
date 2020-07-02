@@ -2353,212 +2353,66 @@ NSLog(@"self.data_updata==%@",self.data_updata);
 
             return;
         }
-        CustomersQuery * customer  = [array objectAtIndex:0];
         
-        
-        
-        NSString * cardState = customer.cardstate;
-        NSLog(@"the uid is %@",customer.usid);
-        NSLog(@"the unames is %@",[self getStoresID]);
-        NSString * uid = [self getStoresID];
-        if ([customer.usid isEqualToString:uid] == NO) {
-            UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"" message:@"不是该门店的客户，禁止查询" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
-            [alert show];
-            if (queryFlag == 0) {
-                searcktextField.text=@"";
-            }else{
-            searcktextField.text = @"";
+        //如果存在补卡状态则过滤掉2020.7.2////////////////
+        if (array.count > 1) {
+            for (CustomersQuery * customer in array) {
+                NSString * uid = [self getStoresID];
+                NSString * cardState = customer.cardstate;
+                if ([customer.usid isEqualToString:uid] == NO) {
+                    UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"" message:@"不是该门店的客户，禁止查询" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+                    [alert show];
+                    if (queryFlag == 0) {
+                        searcktextField.text=@"";
+                    }else{
+                        searcktextField.text = @"";
+                    }
+                    [SVProgressHUD dismiss];
+                    break;
+                }
+                
+                if (![customer.cardstate isEqualToString:@"0"]) {
+                    
+                    NSLog(@"the uid is %@",customer.usid);
+                    NSLog(@"the unames is %@",[self getStoresID]);
+                    
+                    MemberController * member  = [[MemberController alloc] init];
+                    // member.query = searcktextField.text;
+                    member.query = customer.cid;
+                    member.delegate=self;
+                    member.cardState=cardState;
+                    // member.query = @"O0029000150";
+                    [self.navigationController pushViewController:member animated:YES];
+                    [SVProgressHUD dismiss];
+                    break;
+                }
             }
+        }else if (array.count == 1){
+            CustomersQuery * customer = [array objectAtIndex:0];
+            NSString * uid = [self getStoresID];
+            if ([customer.usid isEqualToString:uid] == NO) {
+                UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"" message:@"不是该门店的客户，禁止查询" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+                [alert show];
+                if (queryFlag == 0) {
+                    searcktextField.text=@"";
+                }else{
+                    searcktextField.text = @"";
+                }
+                [SVProgressHUD dismiss];
+                return;
+            }
+            NSString * cardState = customer.cardstate;
+            MemberController * member  = [[MemberController alloc] init];
+            // member.query = searcktextField.text;
+            member.query = customer.cid;
+            member.delegate=self;
+            member.cardState=cardState;
+            // member.query = @"O0029000150";
+            [self.navigationController pushViewController:member animated:YES];
             [SVProgressHUD dismiss];
-
-            return;
-        }
-        if ([cardState isEqualToString:@"1"]) {
             
-
-            MemberController * member  = [[MemberController alloc] init];
-           // member.query = searcktextField.text;
-            member.query = customer.cid;
-            member.delegate=self;
-            member.cardState=cardState;
-            // member.query = @"O0029000150";
-            [self.navigationController pushViewController:member animated:YES];
-            [SVProgressHUD dismiss];
         }
-        else if([cardState isEqualToString:@"0"])
-        {
-//            UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"" message:@"该卡处于已补卡状态" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
-//            [alert show];
-//            if (queryFlag == 0) {
-//                searcktextField.text=@"";
-//            }else{
-//                searcktextField.text = @"O";
-//            }
-//
-//            [SVProgressHUD dismiss];
-            MemberController * member  = [[MemberController alloc] init];
-          //  member.query = searcktextField.text;
-            member.query = customer.cid;
-            member.delegate=self;
-            member.cardState=cardState;
-            // member.query = @"O0029000150";
-            [self.navigationController pushViewController:member animated:YES];
-            [SVProgressHUD dismiss];
-
-
-        }else if ([cardState isEqualToString:@"2"])
-        {
-//            UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"" message:@"该卡处于未激活状态，请重新激活" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
-//            [alert show];
-//            if (queryFlag == 0) {
-//                searcktextField.text=@"";
-//            }else{
-//                searcktextField.text = @"O";
-//            }
-//
-//            [SVProgressHUD dismiss];
-            MemberController * member  = [[MemberController alloc] init];
-          //  member.query = searcktextField.text;
-               member.query = customer.cid;
-            member.delegate=self;
-            member.cardState=cardState;
-            // member.query = @"O0029000150";
-            [self.navigationController pushViewController:member animated:YES];
-            [SVProgressHUD dismiss];
-        }else if ([cardState isEqualToString:@"3"])
-        {
-//            UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"" message:@"该卡处于已转卡状态" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
-//            [alert show];
-//            if (queryFlag == 0) {
-//                searcktextField.text=@"";
-//            }else{
-//                searcktextField.text = @"O";
-//            }
-//
-//            [SVProgressHUD dismiss];
-            MemberController * member  = [[MemberController alloc] init];
-          //  member.query = searcktextField.text;
-               member.query = customer.cid;
-            member.delegate=self;
-            member.cardState=cardState;
-            // member.query = @"O0029000150";
-            [self.navigationController pushViewController:member animated:YES];
-            [SVProgressHUD dismiss];
-        }else if ([cardState isEqualToString:@"4"])
-        {
-//            UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"" message:@"该卡处于挂失状态" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
-//            [alert show];
-//            if (queryFlag == 0) {
-//                searcktextField.text=@"";
-//            }else{
-//                searcktextField.text = @"O";
-//            }
-//
-//            [SVProgressHUD dismiss];
-            MemberController * member  = [[MemberController alloc] init];
-          //  member.query = searcktextField.text;
-              member.query = customer.cid;
-            member.delegate=self;
-            member.cardState=cardState;
-            // member.query = @"O0029000150";
-            [self.navigationController pushViewController:member animated:YES];
-            [SVProgressHUD dismiss];
-        }else if ([cardState isEqualToString:@"5"])
-        {
-//            UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"" message:@"该卡处于已完成状态" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
-//            [alert show];
-//            if (queryFlag == 0) {
-//                searcktextField.text=@"";
-//            }else{
-//                searcktextField.text = @"O";
-//            }
-//
-//            [SVProgressHUD dismiss];
-            MemberController * member  = [[MemberController alloc] init];
-           // member.query = searcktextField.text;
-              member.query = customer.cid;
-            member.delegate=self;
-            member.cardState=cardState;
-            // member.query = @"O0029000150";
-            [self.navigationController pushViewController:member animated:YES];
-            [SVProgressHUD dismiss];
-        }else if ([cardState isEqualToString:@"6"])
-        {
-//            UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"" message:@"该卡处于退卡状态" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
-//            [alert show];
-//            if (queryFlag == 0) {
-//                searcktextField.text=@"";
-//            }else{
-//                searcktextField.text = @"O";
-//            }
-//
-//            [SVProgressHUD dismiss];
-            MemberController * member  = [[MemberController alloc] init];
-          //  member.query = searcktextField.text;
-             member.query = customer.cid;
-            member.delegate=self;
-            member.cardState=cardState;
-            // member.query = @"O0029000150";
-            [self.navigationController pushViewController:member animated:YES];
-            [SVProgressHUD dismiss];
-        }else if ([cardState isEqualToString:@"7"])
-        {
-//            UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"" message:@"该卡处于冻结状态" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
-//            [alert show];
-//            if (queryFlag == 0) {
-//                searcktextField.text=@"";
-//            }else{
-//                searcktextField.text = @"O";
-//            }
-//
-//            [SVProgressHUD dismiss];
-            MemberController * member  = [[MemberController alloc] init];
-           // member.query = searcktextField.text;
-             member.query = customer.cid;
-            member.delegate=self;
-            member.cardState=cardState;
-            // member.query = @"O0029000150";
-            [self.navigationController pushViewController:member animated:YES];
-            [SVProgressHUD dismiss];
-        }else if ([cardState isEqualToString:@"8"])
-        {
-//            UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"" message:@"该卡处于已合卡状态" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
-//            [alert show];
-//            if (queryFlag == 0) {
-//                searcktextField.text=@"";
-//            }else{
-//                searcktextField.text = @"O";
-//            }
-//
-//            [SVProgressHUD dismiss];
-            MemberController * member  = [[MemberController alloc] init];
-          //  member.query = searcktextField.text;
-          member.query = customer.cid;
-            member.delegate=self;
-            member.cardState=cardState;
-            // member.query = @"O0029000150";
-            [self.navigationController pushViewController:member animated:YES];
-            [SVProgressHUD dismiss];
-        }else if ([cardState isEqualToString:@"9"])
-        {
-//            UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"" message:@"该卡处于余零状态" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
-//            [alert show];
-//            if (queryFlag == 0) {
-//                searcktextField.text=@"";
-//            }else{
-//                searcktextField.text = @"O";
-//            }
-//
-//            [SVProgressHUD dismiss];
-            MemberController * member  = [[MemberController alloc] init];
-          //  member.query = searcktextField.text;
-        member.query = customer.cid;
-            member.delegate=self;
-            member.cardState=cardState;
-            // member.query = @"O0029000150";
-            [self.navigationController pushViewController:member animated:YES];
-            [SVProgressHUD dismiss];
-        }
+        
         
     }
     else
