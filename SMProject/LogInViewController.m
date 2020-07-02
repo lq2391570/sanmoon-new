@@ -314,7 +314,7 @@
          self.ipadStatus=[dic objectForKey:@"status"];
         self.myIpadName=[dict2 objectForKey:@"name"];
         NSLog(@"name=%@,self.shopCode=%@",name,self.shopCode);
-    self.data_updata=[dict2 objectForKey:@"data_update"];
+        self.data_updata=[dict2 objectForKey:@"data_update"];
 
     
 #pragma mark 修改

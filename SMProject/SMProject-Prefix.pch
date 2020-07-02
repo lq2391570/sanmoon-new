@@ -29,17 +29,17 @@
 
 
 //测试版//////////////////////////////
-//#define ReLocation @"https://ipad.sanmoon.net/version/cssanmoon/CSSMVersion.html"
-//#define LocationIp @"http://ipad.sanmoon.net:9999/CsSanmoon/"
-//#define RIP @"http://113.140.20.6/csgetdata/"
-//#define ReLocationPlist @"itms-services://?action=download-manifest&url=https://ipad.sanmoon.net/version/cssanmoon/CSSanmoon.plist";
+#define ReLocation @"https://ipad.sanmoon.net/version/cssanmoon/CSSMVersion.html"
+#define LocationIp @"http://ipad.sanmoon.net:9999/CsSanmoon/"
+#define RIP @"http://113.140.20.6/csgetdata/"
+#define ReLocationPlist @"itms-services://?action=download-manifest&url=https://ipad.sanmoon.net/version/cssanmoon/CSSanmoon.plist";
 
 
 //正式版////////////////////////////
-#define ReLocation @"https://ipad.sanmoon.net/version/sanmoon/SMVersion.html"
-#define LocationIp @"http://ipad.sanmoon.net:9999/Sanmoon/"
-#define RIP @"http://113.140.20.6/getdata/"
-#define ReLocationPlist @"itms-services://?action=download-manifest&url=https://ipad.sanmoon.net/version/sanmoon/Sanmoon.plist";
+//#define ReLocation @"https://ipad.sanmoon.net/version/sanmoon/SMVersion.html"
+//#define LocationIp @"http://ipad.sanmoon.net:9999/Sanmoon/"
+//#define RIP @"http://113.140.20.6/getdata/"
+//#define ReLocationPlist @"itms-services://?action=download-manifest&url=https://ipad.sanmoon.net/version/sanmoon/Sanmoon.plist";
 
 
 

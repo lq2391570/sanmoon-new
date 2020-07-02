@@ -322,6 +322,9 @@ NSLog(@"self.data_updata==%@",self.data_updata);
         
         NSString *str=[dic objectForKey:@"status"];
         if ([str integerValue]==1) {
+            NSUserDefaults *users = [NSUserDefaults standardUserDefaults];
+            //表示已经进行了下载
+            [users setObject:@"0" forKey:@"dataupdata"];
 //            UIAlertView *alert=[[UIAlertView alloc] initWithTitle:@"提示" message:@"数据更新成功" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
 //            [alert show];
         }else{
@@ -394,13 +397,13 @@ NSLog(@"self.data_updata==%@",self.data_updata);
 //    }
     //提示更新数据
     NSUserDefaults *users=[NSUserDefaults standardUserDefaults];
-    if (![[users objectForKey:@"upData"] isKindOfClass:[NSString class]]||[self.data_updata integerValue]==1) {
+    if ([users objectForKey:@"dataupdata"] == nil || [self.data_updata integerValue] == 1) {
 #pragma mark 2020-5-4号需求改为直接更新，取消弹框提示
 //        UIAlertView *alert=[[UIAlertView alloc] initWithTitle:@"提示" message:@"目前不是最新数据，是否更新" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:@"取消", nil];
 //        alert.tag=1000;
 //        [alert show];
-        NSUserDefaults *users=[NSUserDefaults standardUserDefaults];
-        [users setObject:@"Y" forKey:@"upData"];
+//        NSUserDefaults *users=[NSUserDefaults standardUserDefaults];
+//        [users setObject:@"Y" forKey:@"upData"];
         [SVProgressHUD showWithStatus:@"目前不是最新数据，正在更新相关内容，请等待更新完成" maskType:SVProgressHUDMaskTypeClear];
         [self allDownLoad:_progressView uilable:self.lhuilable];
         NSLog(@"begin");
@@ -509,16 +512,16 @@ NSLog(@"self.data_updata==%@",self.data_updata);
 
 - (void)allDownLoad:(UIProgressView *)progress uilable:(UILabel*)lable
 {
-     [self initDatabase];
+    [self initDatabase];
     self.lhuilable = lable;
     self.LhprogressView = progress;
-    [SVProgressHUD showWithStatus:@"目前不是最新数据，正在更新相关内容，请等待更新完成" maskType:SVProgressHUDMaskTypeClear];
+//    [SVProgressHUD showWithStatus:@"目前不是最新数据，正在更新相关内容，请等待更新完成" maskType:SVProgressHUDMaskTypeClear];
     if(!keyDictRe){
         keyDictRe = [NSMutableDictionary dictionaryWithCapacity:200];
     }
 //    [[DownloadModel sharedDownloadModel]setP:progress];
 //
-//    
+//
     NSLog(@"点击了一键更新");
     _dataArray=[[NSArray alloc] init];
     [self complete:^(NSArray *array) {
@@ -778,7 +781,6 @@ NSLog(@"self.data_updata==%@",self.data_updata);
 //         
 //                }
                 
-                
                 [self deleteBookInfoOfEBook:bookInfo.name];
               NSArray *imageArray=[dict objectForKey:@"images"];
                 NSLog(@"%d---",imageArray.count);
@@ -834,11 +836,11 @@ NSLog(@"self.data_updata==%@",self.data_updata);
         if (self.currentSize < 2) {
           //  [SVProgressHUD dismiss];
           //  [SVProgressHUD showSuccessWithStatus:@"已是最新数据" duration:3];
-            [SVProgressHUD showSuccessWithStatus:@"已是最新数据"];
+//            [SVProgressHUD showSuccessWithStatus:@"已是最新数据"];
             self.LhprogressView.hidden = YES;
             self.lhuilable.hidden = YES;
             [self updateZhuangTai:^(NSString *string) {
-                [SVProgressHUD showSuccessWithStatus:@"已遍历数据"];
+//                [SVProgressHUD showSuccessWithStatus:@"已遍历数据"];
                 self.alreadyBianLi=@"1";
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"btnChange" object:self.alreadyBianLi];
                 
@@ -854,12 +856,7 @@ NSLog(@"self.data_updata==%@",self.data_updata);
 //    [SVProgressHUD dismiss];
 
 }
-- (void)allDownLoad4
-{
-    
-    
-    
-}
+
 - (void)didImageDownloaded:(NSString*)path url:(NSString*)url{
     [keyDictRe removeObjectForKey:url];
     ASIHTTPRequest*rest = [keyDictRe objectForKey:url];
@@ -869,16 +866,16 @@ NSLog(@"self.data_updata==%@",self.data_updata);
     float size = [keyDictRe allKeys].count;
     self.LhprogressView.progress =(num-size)/num;
     self.lhuilable.text = [NSString stringWithFormat:@"%0.2f%s",self.LhprogressView.progress*100,"%"];
-     [SVProgressHUD showProgress:(num-size)/num status:@"目前不是最新数据，正在更新相关内容，请等待更新完成" maskType:SVProgressHUDMaskTypeClear];
-    
+    long long downLoadSize = rest.totalBytesSent;
+    NSLog(@"downLoadSize = %lld",downLoadSize);
+     [SVProgressHUD showProgress:(num-size)/num status:[NSString stringWithFormat:@"目前不是最新数据，正在更新相关内容，请等待更新完成 已下载 %0.2f%%",(num-size)/num * 100] maskType:SVProgressHUDMaskTypeClear];
     if (size < 2) {
         [SVProgressHUD dismiss];
-         [self performSelector:@selector(dismiss) withObject:nil afterDelay:1];
+        [self performSelector:@selector(dismiss) withObject:nil afterDelay:1];
         [self updateZhuangTai:^(NSString *string) {
             
         }];
     }
-   
 }
 -(void)dismiss{
     self.LhprogressView.hidden = YES;
@@ -2300,9 +2297,6 @@ NSLog(@"self.data_updata==%@",self.data_updata);
     [self.navigationController pushViewController:customervc animated:YES];
     [SVProgressHUD dismiss];
 }
-
-
-
 
 #pragma mark 修改
 - (void)searchTask
