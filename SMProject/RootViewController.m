@@ -523,6 +523,10 @@ NSLog(@"self.data_updata==%@",self.data_updata);
 //
 //
     NSLog(@"点击了一键更新");
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [SVProgressHUD showWithStatus:@"正在更新数据，请稍等" maskType:SVProgressHUDMaskTypeClear];
+    });
+    
     _dataArray=[[NSArray alloc] init];
     [self complete:^(NSArray *array) {
         _dataArray=array;
@@ -829,7 +833,7 @@ NSLog(@"self.data_updata==%@",self.data_updata);
             }
             
         }
-        [SVProgressHUD dismiss];
+//        [SVProgressHUD dismiss];
         
         
        self.currentSize = [[DownloadModel sharedDownloadModel] countOfqueue];
@@ -840,7 +844,7 @@ NSLog(@"self.data_updata==%@",self.data_updata);
             self.LhprogressView.hidden = YES;
             self.lhuilable.hidden = YES;
             [self updateZhuangTai:^(NSString *string) {
-//                [SVProgressHUD showSuccessWithStatus:@"已遍历数据"];
+                [SVProgressHUD showSuccessWithStatus:@"已遍历数据"];
                 self.alreadyBianLi=@"1";
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"btnChange" object:self.alreadyBianLi];
                 
@@ -883,8 +887,8 @@ NSLog(@"self.data_updata==%@",self.data_updata);
    // [SVProgressHUD showSuccessWithStatus:@"下载完成" duration:3];
     [self updateZhuangTai:^(NSString *string) {
         if ([string intValue]==1) {
-            UIAlertView *alert=[[UIAlertView alloc] initWithTitle:@"提示" message:@"数据更新完成" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
-            [alert show];
+//            UIAlertView *alert=[[UIAlertView alloc] initWithTitle:@"提示" message:@"数据更新完成" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+//            [alert show];
             self.alreadyBianLi=@"1";
             [[NSNotificationCenter defaultCenter] postNotificationName:@"btnChange" object:self.alreadyBianLi];
         }
