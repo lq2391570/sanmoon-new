@@ -22,4 +22,5 @@
 @property (nonatomic,retain) IBOutlet UITableView * customerTableView;
 @property (nonatomic,retain) NSArray * array;
 @property (nonatomic,assign)id<myTextDelegate>delegate;
+
 @end

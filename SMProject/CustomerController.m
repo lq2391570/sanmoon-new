@@ -13,7 +13,9 @@
 #import "MemberController.h"
 
 @interface CustomerController ()
-
+{
+    NSMutableArray *_tempArray;
+}
 @end
 
 @implementation CustomerController
@@ -32,7 +34,17 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    _tempArray = [NSMutableArray arrayWithCapacity:0];
     // Do any additional setup after loading the view from its nib.
+    for (int i = 0; i<self.array.count; i++) {
+        CustomersQuery * customer = [self.array objectAtIndex:i];
+        if ([customer.cardstate isEqualToString:@"1"]) {
+            [_tempArray addObject:customer];
+        }
+    }
+    
+    
+    
 }
 
 - (void)didReceiveMemoryWarning
@@ -47,7 +59,7 @@
 
 // Customize the number of rows in the table view.
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-	return [self.array count] + 1;
+	return [_tempArray count] + 1;
 }
 
 // Customize the appearance of table view cells.
@@ -84,7 +96,7 @@
             }
         }
     }
-    CustomersQuery * customer = [self.array objectAtIndex:indexPath.row - 1];
+    CustomersQuery * customer = [_tempArray objectAtIndex:indexPath.row - 1];
     custom.cardLab.text = customer.cid;
     custom.nameLab.text = customer.gsname;
     custom.selectionStyle = UITableViewCellSelectionStyleBlue;
@@ -105,7 +117,7 @@
     else
     {
         
-        CustomersQuery * customer = [self.array objectAtIndex:indexPath.row -1];
+        CustomersQuery * customer = [_tempArray objectAtIndex:indexPath.row -1];
         MemberController * member  = [[MemberController alloc] init];
         member.query = customer.cid;
         member.cardState=customer.cardstate;
