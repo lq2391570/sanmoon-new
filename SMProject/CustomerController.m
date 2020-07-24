@@ -39,7 +39,7 @@
     // Do any additional setup after loading the view from its nib.
     for (int i = 0; i<self.array.count; i++) {
         CustomersQuery * customer = [self.array objectAtIndex:i];
-        if ([customer.cardstate isEqualToString:@"1"]) {
+        if ([customer.cardstate isEqualToString:@"1"] || [customer.cardstate isEqualToString:@"9"]) {
             [_tempArray addObject:customer];
         }
     }

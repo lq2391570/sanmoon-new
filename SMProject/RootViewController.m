@@ -2366,7 +2366,7 @@ NSLog(@"self.data_updata==%@",self.data_updata);
             NSMutableArray *tempArray = [NSMutableArray arrayWithCapacity:0];
             for (int i = 0; i< array.count; i++) {
                 CustomersQuery * customer = [array objectAtIndex:i];
-                if ([customer.cardstate isEqualToString:@"1"]) {
+                if ([customer.cardstate isEqualToString:@"1"] || [customer.cardstate isEqualToString:@"9"]) {
                     [tempArray addObject:customer];
                 }
             }
@@ -2388,7 +2388,7 @@ NSLog(@"self.data_updata==%@",self.data_updata);
                             break;
                         }
                         
-                        if ([customer.cardstate isEqualToString:@"1"]) {
+                        if ([customer.cardstate isEqualToString:@"1"] || [customer.cardstate isEqualToString:@"9"]) {
                             
                             NSLog(@"the uid is %@",customer.usid);
                             NSLog(@"the unames is %@",[self getStoresID]);
