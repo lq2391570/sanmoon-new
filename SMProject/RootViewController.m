@@ -2373,37 +2373,72 @@ NSLog(@"self.data_updata==%@",self.data_updata);
             if (tempArray.count == 0) {
                 [SVProgressHUD showInfoWithStatus:@"此卡状态异常"];
             }else{
-                    for (CustomersQuery * customer in tempArray) {
-                        NSString * uid = [self getStoresID];
-                        NSString * cardState = customer.cardstate;
-                        if ([customer.usid isEqualToString:uid] == NO) {
-                            UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"" message:@"不是该门店的客户，禁止查询" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
-                            [alert show];
-                            if (queryFlag == 0) {
-                                searcktextField.text=@"";
-                            }else{
-                                searcktextField.text = @"";
-                            }
-                            [SVProgressHUD dismiss];
-                            break;
+                //先查询正常卡
+                for (CustomersQuery * customer in tempArray) {
+                    NSString * uid = [self getStoresID];
+                    NSString * cardState = customer.cardstate;
+                    if ([customer.usid isEqualToString:uid] == NO) {
+                        UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"" message:@"不是该门店的客户，禁止查询" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+                        [alert show];
+                        if (queryFlag == 0) {
+                            searcktextField.text=@"";
+                        }else{
+                            searcktextField.text = @"";
                         }
-                        
-                        if ([customer.cardstate isEqualToString:@"1"] || [customer.cardstate isEqualToString:@"9"]) {
-                            
-                            NSLog(@"the uid is %@",customer.usid);
-                            NSLog(@"the unames is %@",[self getStoresID]);
-                            
-                            MemberController * member  = [[MemberController alloc] init];
-                            // member.query = searcktextField.text;
-                            member.query = customer.cid;
-                            member.delegate=self;
-                            member.cardState=cardState;
-                            // member.query = @"O0029000150";
-                            [self.navigationController pushViewController:member animated:YES];
-                            [SVProgressHUD dismiss];
-                            break;
-                        }
+                        [SVProgressHUD dismiss];
+                        break;
                     }
+                    
+                    if ([customer.cardstate isEqualToString:@"1"]) {
+                        
+                        NSLog(@"the uid is %@",customer.usid);
+                        NSLog(@"the unames is %@",[self getStoresID]);
+                        
+                        MemberController * member  = [[MemberController alloc] init];
+                        // member.query = searcktextField.text;
+                        member.query = customer.cid;
+                        member.delegate=self;
+                        member.cardState=cardState;
+                        // member.query = @"O0029000150";
+                        [self.navigationController pushViewController:member animated:YES];
+                        [SVProgressHUD dismiss];
+                        break;
+                    }
+                }
+                
+                //后查询余零卡
+                for (CustomersQuery * customer in tempArray) {
+                    NSString * uid = [self getStoresID];
+                    NSString * cardState = customer.cardstate;
+                    if ([customer.usid isEqualToString:uid] == NO) {
+                        UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"" message:@"不是该门店的客户，禁止查询" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+                        [alert show];
+                        if (queryFlag == 0) {
+                            searcktextField.text=@"";
+                        }else{
+                            searcktextField.text = @"";
+                        }
+                        [SVProgressHUD dismiss];
+                        break;
+                    }
+                    
+                    if ([customer.cardstate isEqualToString:@"9"]) {
+                        
+                        NSLog(@"the uid is %@",customer.usid);
+                        NSLog(@"the unames is %@",[self getStoresID]);
+                        
+                        MemberController * member  = [[MemberController alloc] init];
+                        // member.query = searcktextField.text;
+                        member.query = customer.cid;
+                        member.delegate=self;
+                        member.cardState=cardState;
+                        // member.query = @"O0029000150";
+                        [self.navigationController pushViewController:member animated:YES];
+                        [SVProgressHUD dismiss];
+                        break;
+                    }
+                }
+                
                
             }
             
