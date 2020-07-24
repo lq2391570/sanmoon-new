@@ -11,7 +11,8 @@
 #import "CustomerTitleCell.h"
 #import "XMLmanage.h"
 #import "MemberController.h"
-
+#import "ASIFormDataRequest.h"
+#import "Reachability.h"
 @interface CustomerController ()
 {
     NSMutableArray *_tempArray;
@@ -104,6 +105,33 @@
     
     return custom;
 }
+-(BOOL) isConnectionAvailable{
+    
+    BOOL isExistenceNetwork = YES;
+    Reachability *reach = [Reachability reachabilityWithHostName:@"www.apple.com"];
+    switch ([reach currentReachabilityStatus]) {
+        case NotReachable:
+            isExistenceNetwork = NO;
+            //NSLog(@"notReachable");
+            break;
+        case ReachableViaWiFi:
+            isExistenceNetwork = YES;
+            //NSLog(@"WIFI");
+            break;
+        case ReachableViaWWAN:
+            isExistenceNetwork = YES;
+            //NSLog(@"3G");
+            break;
+    }
+    
+    if (!isExistenceNetwork) {
+        UIAlertView *alert=[[UIAlertView alloc] initWithTitle:@"提示" message:@"网络不通畅，请检查网络" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+        [alert show];
+        return NO;
+    }
+    
+    return isExistenceNetwork;
+}
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -114,15 +142,18 @@
     }
     else
     {
-        
-        CustomersQuery * customer = [_tempArray objectAtIndex:indexPath.row -1];
-        MemberController * member  = [[MemberController alloc] init];
-        member.query = customer.cid;
-        member.cardState=customer.cardstate;
-        if (customer.cid!=nil) {
-             [self.navigationController pushViewController:member animated:YES];
+        if ([self isConnectionAvailable] == NO) {
+            
+        }else{
+            CustomersQuery * customer = [_tempArray objectAtIndex:indexPath.row -1];
+            MemberController * member  = [[MemberController alloc] init];
+            member.query = customer.cid;
+            member.cardState=customer.cardstate;
+            if (customer.cid!=nil) {
+                [self.navigationController pushViewController:member animated:YES];
+            }
         }
-       
+    
     }
 }
 

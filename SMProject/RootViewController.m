@@ -2249,6 +2249,10 @@ NSLog(@"self.data_updata==%@",self.data_updata);
 //精确查询
 - (void)jingQueSearch
 {
+    if ([self isConnectionAvailable] == NO ) {
+        return;
+    }
+    
     NSMutableArray * array =[NSMutableArray arrayWithArray:[[XMLmanage shardSingleton] getGuestInfoWithName2:_nameTextField.text  withUsername:@"sanmoon" withPwd:@"sm147369" cardNum:_cardTextField.text]];
     
     if ([array count] == 0)
@@ -2276,7 +2280,14 @@ NSLog(@"self.data_updata==%@",self.data_updata);
 }
 - (void)jingQueSearchWithPhone
 {
+    if ([self isConnectionAvailable] == NO ) {
+        return;
+    }
+    
     NSMutableArray * array =[NSMutableArray arrayWithArray:[[XMLmanage shardSingleton] getGuestInfoWithNamePhone2:_nameTextField.text  withUsername:@"sanmoon" withPwd:@"sm147369" cardNum:_cardTextField.text]];
+    
+    
+    
     
     if ([array count] == 0)
     {

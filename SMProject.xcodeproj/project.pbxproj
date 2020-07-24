@@ -479,7 +479,6 @@
 		CE49FE9624C683F8002B731C /* 圣梦152.png in Resources */ = {isa = PBXBuildFile; fileRef = CE49FE9424C683F8002B731C /* 圣梦152.png */; };
 		CE49FE9724C683F8002B731C /* 圣梦76.png in Resources */ = {isa = PBXBuildFile; fileRef = CE49FE9524C683F8002B731C /* 圣梦76.png */; };
 		CE49FE9A24C68466002B731C /* 圣梦cs76.png in Resources */ = {isa = PBXBuildFile; fileRef = CE49FE9824C68465002B731C /* 圣梦cs76.png */; };
-		CE49FE9B24C68466002B731C /* 圣梦cs152.png in Resources */ = {isa = PBXBuildFile; fileRef = CE49FE9924C68466002B731C /* 圣梦cs152.png */; };
 		FC56E3A71AA05C90005C38DF /* 返回2.png in Resources */ = {isa = PBXBuildFile; fileRef = FC56E3A61AA05C90005C38DF /* 返回2.png */; };
 		FC7C2FF91B4250B00072A78B /* TPKeyboardAvoidingCollectionView.m in Sources */ = {isa = PBXBuildFile; fileRef = FC7C2FF21B4250B00072A78B /* TPKeyboardAvoidingCollectionView.m */; };
 		FC7C2FFA1B4250B00072A78B /* TPKeyboardAvoidingScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = FC7C2FF41B4250B00072A78B /* TPKeyboardAvoidingScrollView.m */; };
@@ -1243,7 +1242,6 @@
 		CE49FE9424C683F8002B731C /* 圣梦152.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "圣梦152.png"; sourceTree = "<group>"; };
 		CE49FE9524C683F8002B731C /* 圣梦76.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "圣梦76.png"; sourceTree = "<group>"; };
 		CE49FE9824C68465002B731C /* 圣梦cs76.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "圣梦cs76.png"; sourceTree = "<group>"; };
-		CE49FE9924C68466002B731C /* 圣梦cs152.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "圣梦cs152.png"; path = "../../../../b/圣梦cs152.png"; sourceTree = "<group>"; };
 		FC56E3A61AA05C90005C38DF /* 返回2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "返回2.png"; sourceTree = "<group>"; };
 		FC7C2FF11B4250B00072A78B /* TPKeyboardAvoidingCollectionView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TPKeyboardAvoidingCollectionView.h; sourceTree = "<group>"; };
 		FC7C2FF21B4250B00072A78B /* TPKeyboardAvoidingCollectionView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TPKeyboardAvoidingCollectionView.m; sourceTree = "<group>"; };
@@ -2666,7 +2664,6 @@
 				CE49FE9524C683F8002B731C /* 圣梦76.png */,
 				CE49FE9424C683F8002B731C /* 圣梦152.png */,
 				CE49FE9824C68465002B731C /* 圣梦cs76.png */,
-				CE49FE9924C68466002B731C /* 圣梦cs152.png */,
 			);
 			path = "圣梦图片";
 			sourceTree = "<group>";
@@ -3280,7 +3277,6 @@
 				A2152AB11A0C929B0083E9E2 /* 圣梦_紫黑_39.png in Resources */,
 				CBA0B65818F014870069350E /* EbookViewController.xib in Resources */,
 				A2FF9B3419050A4B005089C5 /* Info.plist in Resources */,
-				CE49FE9B24C68466002B731C /* 圣梦cs152.png in Resources */,
 				CBAD7A6D192302F9002E1886 /* index_gw.png in Resources */,
 				FCAE33341A480B4700800749 /* 登录_点击前.png in Resources */,
 				FCAE33301A4808E900800749 /* 登录_点击后.jpg in Resources */,
