@@ -1711,10 +1711,13 @@ FMDatabase *__infoDb = nil;
         self.compArry = [NSMutableArray arrayWithCapacity:10];
         self.subImages = [NSMutableArray arrayWithCapacity:10];
         self.subIdArray = [NSMutableArray arrayWithCapacity:10];
-        
+        NSArray * dir = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
+        NSString * documentDirectory = [dir objectAtIndex:0];
+        NSString * dirPath = [documentDirectory stringByAppendingPathComponent:@"informationCover"];
+        NSString * fileName;
         
         NSString * path;
-        NSString * fileName;
+        
         
         NSLog(@"bookArray is %@",bookArray);
         for (InformationInfo * book in bookArray)
@@ -1724,11 +1727,14 @@ FMDatabase *__infoDb = nil;
             
             UIImage * image = nil;
             
-            NSString *filePath = [self getcoverimagepath:book.name];
+//            NSString *filePath = [self getcoverimagepath:book.name];
             //            [self.coverVersionArray addObject:book.name];
+            NSArray * links = [book.imgUrl componentsSeparatedByString:@"/"];
+            fileName = [links objectAtIndex:2];
+            NSString *path = [NSString stringWithFormat:@"%@/%@/%@",dirPath,book.name,fileName];
             NSLog(@"name is %@",book.name);
-            if (filePath) {
-                image = [UIImage imageWithContentsOfFile:filePath];
+            if (path) {
+                image = [UIImage imageWithContentsOfFile:path];
                 //[self.coverImageArray addObject:image];
             }else{
                 
@@ -1860,19 +1866,29 @@ FMDatabase *__infoDb = nil;
     self.subIdArray = [NSMutableArray arrayWithCapacity:10];
     backArray = [NSMutableArray arrayWithCapacity:10];
     
-    
+    NSArray * dir = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
+    NSString * documentDirectory = [dir objectAtIndex:0];
+    NSString * dirPath = [documentDirectory stringByAppendingPathComponent:@"informationCover"];
     NSMutableArray *array = [NSMutableArray arrayWithCapacity:10];
+    NSString * fileName;
+    
+    
     [[InformationManage shardSingleton] searchInDbBycompId:backstr returnArray:&array];
     [backArray addObject:array];
     for (InformationInfo *projectinfo in array) {
         [self.subIdArray addObject:projectinfo.ID];
         [self.subImages addObject:projectinfo.imagesIDs];
         [self.compArry addObject:projectinfo.compId];
-        NSString *filePath = [self getcoverimagepath:projectinfo.name];
+//        NSString *filePath = [self getcoverimagepath:projectinfo.name];
+        NSArray * links = [projectinfo.imgUrl componentsSeparatedByString:@"/"];
+        fileName = [links objectAtIndex:2];
+        NSString *path = [NSString stringWithFormat:@"%@/%@/%@",dirPath,projectinfo.name,fileName];
+        
+        
         [self.coverVersionArray addObject:projectinfo.name];
         NSLog(@"name is %@",projectinfo.name);
-        if (filePath) {
-            UIImage * image = [UIImage imageWithContentsOfFile:filePath];
+        if (path) {
+            UIImage * image = [UIImage imageWithContentsOfFile:path];
             [self.coverImageArray addObject:image];
         }else{
             
