@@ -105,4 +105,5 @@
 - (BOOL)deleteRecords;
 - (BOOL)deleteOrderRecordWithName:(NSString *)name;
 - (BOOL)updateOrder:(OrderInfo *)info;
+
 @end

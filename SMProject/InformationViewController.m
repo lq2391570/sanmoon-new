@@ -22,6 +22,11 @@
 #import "ProjectManage.h"
 #import <AVFoundation/AVFoundation.h>
 #import <AVKit/AVKit.h>
+#import "FMDatabase.h"
+#import "FMResultSet.h"
+#import "FMDatabaseAdditions.h"
+
+
 
 #define kAnimationDuration 0.1
 
@@ -73,7 +78,7 @@ NSString * bVersion;
 int internetOnline;
 int flag;
 static NSString *backstr = @"-1";//记录返回compid
-
+FMDatabase *__infoDb = nil;
 @implementation InformationViewController
 
 @synthesize coverImageArray = _coverImageArray;
@@ -131,6 +136,12 @@ static NSString *backstr = @"-1";//记录返回compid
     self.datesource  = [NSMutableArray arrayWithCapacity:1];
     self.numArray    = [NSMutableArray arrayWithCapacity:3];
     self.IDArray     = [NSMutableArray arrayWithCapacity:3];
+    //判断是否是没网状态，有网则重置数据库
+    if ([self checkInternet])
+    {
+        //          [self deleteAllDBTableCover];
+        [self deleteDBWithCompid:@"-1"];
+    }
 }
 
 - (void)back
@@ -190,6 +201,7 @@ static NSString *backstr = @"-1";//记录返回compid
     if ([self checkInternet])
     {
         internetOnline = 1;
+        [self initDatabaseCover];
         [self getCoverImage];
     }
     else
@@ -1204,7 +1216,8 @@ static NSString *backstr = @"-1";//记录返回compid
         fileName = [links objectAtIndex:2];
         path = [NSString stringWithFormat:@"%@/%@/%@",dirPath,book.name,fileName];
         [self.idArray addObject:book.imagesIDs];
-        [[InformationManage shardSingleton] insertCompInDB:book];
+//        [[InformationManage shardSingleton] insertCompInDB:book];
+        [self insertCoverWithModel:book];
         [self.coverVersionArray addObject:book.name];
         [self.compArry addObject:book.compId];
         [self.subImages addObject:book.imagesIDs];
@@ -1652,8 +1665,10 @@ static NSString *backstr = @"-1";//记录返回compid
         NSMutableArray * bookArray = [self getdatawithindexPath:indexPath.row];
         [backArray addObject:bookArray];
         // NSLog(@"backarray is %@",backArray);
-        
-        
+        if (bookArray.count > 0) {
+            InformationInfo * book = [bookArray objectAtIndex:0];
+            [self deleteDBWithCompid:book.compId];
+        }
         [self initviewBybookId:bookArray];
         
         if (!self.compArry.count == 0) {
@@ -1704,8 +1719,8 @@ static NSString *backstr = @"-1";//记录返回compid
         NSLog(@"bookArray is %@",bookArray);
         for (InformationInfo * book in bookArray)
         {
-            [[InformationManage shardSingleton] insertCompInDB:book];
-            
+//            [[InformationManage shardSingleton] insertCompInDB:book];
+            [self insertCoverWithModel:book];
             
             UIImage * image = nil;
             
@@ -1761,7 +1776,9 @@ static NSString *backstr = @"-1";//记录返回compid
         NSLog(@"bookarray is %@",[self.subIdArray objectAtIndex:row]);
         
         [[InformationManage shardSingleton] getBookRecordwithid:[self.subIdArray objectAtIndex:row] retun:&bookArray];
-        
+        for (InformationInfo * book in bookArray){
+            [self insertCoverWithModel:book];
+        }
     }else
     {
         [[InformationManage shardSingleton] searchInDbBycompId:[self.subIdArray objectAtIndex:row] returnArray:&bookArray];
@@ -1905,6 +1922,47 @@ static NSString *backstr = @"-1";//记录返回compid
     
     return nil;
 }
+- (void)initDatabaseCover
+{
+    
+    NSString *sandBoxPath = [NSHomeDirectory() stringByAppendingPathComponent:@"Library/Caches/High"];
+    NSFileManager *manager = [NSFileManager defaultManager];
+    if ([manager fileExistsAtPath:sandBoxPath]) {
+        NSLog(@"文件存在");
+        __infoDb = [[FMDatabase alloc] initWithPath:sandBoxPath];
+        [__infoDb setShouldCacheStatements:YES];
+        [__infoDb open];
+    }else{
+        NSLog(@"文件没找到");
+    }
+    
+}
+//删除数据
+- (void)deleteDBWithCompid:(NSString *)compid
+{
+    [__infoDb open];
+    BOOL success = [__infoDb executeUpdate:[NSString stringWithFormat:@"DELETE FROM Information WHERE compid = '%@'",compid]];
+    if (!success) {
+        NSLog(@"删除数据失败%@",[__infoDb lastErrorMessage]);
+    }else{
+        NSLog(@"删除数据成功");
+    }
+    [__infoDb close];
+}
+
+//插入数据
+- (void)insertCoverWithModel:(InformationInfo *)book
+{
+    [__infoDb open];
+    BOOL success = [__infoDb executeUpdate:@"INSERT INTO Information (id,name,imgUrl,compId,imageIds) values (?,?,?,?,?)",book.ID,book.name,book.imgUrl,book.compId,book.imagesIDs];
+    if (!success) {
+        NSLog(@"%@",[__infoDb lastErrorMessage]);
+    }else{
+        NSLog(@"添加数据成功");
+    }
+    [__infoDb close];
+}
+
 
 
 

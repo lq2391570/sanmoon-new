@@ -57,7 +57,7 @@
 #define imageUrl LocationIp
 int queryFlag;
 NSString * uName;
-FMDatabase *__db = nil;
+FMDatabase *__ddb = nil;
 ///
 @interface RootViewController ()
 
@@ -298,7 +298,8 @@ NSLog(@"self.data_updata==%@",self.data_updata);
 //    ipadVersionlabel.textColor=[UIColor darkGrayColor];
 //    [self.view addSubview:ipadVersionlabel];
    // [self popAlertView];
-    
+    NSString *librarytPath=[NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+    NSLog(@"librarytPath=%@",librarytPath);
 }
 //上传状态
 - (void)updateZhuangTai:(void (^) (NSString *string))complete
@@ -537,10 +538,8 @@ NSLog(@"self.data_updata==%@",self.data_updata);
         for (int i=0; i<array.count; i++) {
             //EBookInfo
             NSDictionary *dict=[array objectAtIndex:i];
-
             EBookInfo *bookInfo=[[EBookInfo alloc] init];
             bookInfo.type = [dict objectForKey:@"type"];
-
             //InformationInfo
             InformationInfo *mationInfo=[[InformationInfo alloc] init];
             mationInfo.type=[dict objectForKey:@"type"];
@@ -558,18 +557,6 @@ NSLog(@"self.data_updata==%@",self.data_updata);
                 NSLog(@"--%@",project.name);
                 [self insertProjectDB:project];
                 [self createDirectoryPath:@"cover1" withName:project.name];
-                //                if ([project.imgUrl rangeOfString:@"resources/img"].location != NSNotFound ) {
-                //
-                //                    NSArray * array = [project.imgUrl componentsSeparatedByString:@"resources/img/"];
-                //                    NSString *fileName = [array objectAtIndex:1];
-                //
-                //                    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                //                        [self download:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",imageUrl,project.imgUrl]] path:[NSString stringWithFormat:@"Library/Caches/cover1/%@/%@",project.name,fileName]];
-                //                        NSLog(@"==%@",[NSString stringWithFormat:@"Library/Caches/cover1/%@/%@",project.name,fileName]);
-                //                    });
-                //
-                //                }
-                
                 [self deleteBookInfoOfProject:project.name];
                 NSArray *imageArray=[dict objectForKey:@"images"];
                 NSLog(@"%d---",imageArray.count);
@@ -918,6 +905,8 @@ NSLog(@"self.data_updata==%@",self.data_updata);
                 highbookInfo.name = [dict objectForKey:@"name"];
                 highbookInfo.compId = [dict objectForKey:@"compId"];
                 NSLog(@"--%@",highbookInfo.name);
+                
+                
                 [self insertHighDB:highbookInfo];
                 [self createDirectoryPath:@"cover2" withName:highbookInfo.name];
 //                if ([highbookInfo.imgUrl rangeOfString:@"resources/img"].location != NSNotFound ) {
@@ -1218,20 +1207,50 @@ NSLog(@"self.data_updata==%@",self.data_updata);
     NSFileManager *manager = [NSFileManager defaultManager];
         if ([manager fileExistsAtPath:sandBoxPath]) {
             NSLog(@"文件存在");
-            __db = [[FMDatabase alloc] initWithPath:sandBoxPath];
-            [__db setShouldCacheStatements:YES];
-            [__db open];
+            __ddb = [[FMDatabase alloc] initWithPath:sandBoxPath];
+            [__ddb setShouldCacheStatements:YES];
+            [__ddb open];
         }else{
             NSLog(@"文件没找到");
         }
 
 }
+- (void)initDatabaseCover
+{
+    
+    NSString *sandBoxPath = [NSHomeDirectory() stringByAppendingPathComponent:@"Library/Caches/Project"];
+    NSFileManager *manager = [NSFileManager defaultManager];
+    if ([manager fileExistsAtPath:sandBoxPath]) {
+        NSLog(@"文件存在");
+        __ddb = [[FMDatabase alloc] initWithPath:sandBoxPath];
+        [__ddb setShouldCacheStatements:YES];
+        [__ddb open];
+    }else{
+        NSLog(@"文件没找到");
+    }
+    
+}
 - (void)insertIntoCover:(EBookInfo *)info
 {
-    [__db executeUpdate:@"insert into cover (id,name,compId,imageIds,imgUrl) values (?,?,?,?,?);",info.ID,info.name,info.compId,info.imagesIDs,info.imgUrl];
+    [__ddb executeUpdate:@"insert into cover (id,name,compId,imageIds,imgUrl) values (?,?,?,?,?);",info.ID,info.name,info.compId,info.imagesIDs,info.imgUrl];
     NSLog(@"%@,%@,%@,%@,%@",info.ID,info.name,info.compId,info.imagesIDs,info.imgUrl);
     NSLog(@"执行插入操作");
 }
+//删除表
+- (void)deleteAllDBTableCover
+{
+    [__ddb open];
+    NSString *SQL = @"DELETE FROM cover";
+    BOOL isSuccess = [__ddb executeUpdate:SQL];
+    if (!isSuccess) {
+        NSLog(@"删除cover失败");
+    }else{
+        NSLog(@"删除cover成功");
+    }
+    [__ddb close];
+    
+}
+
 - (void)insertCompInDB:(EBookInfo *)info
 {
     

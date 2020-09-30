@@ -87,11 +87,6 @@ UINavigationController *na1;
     NSString*text =[NSString stringWithFormat:@"%@ %@",appName,versionNum];
     NSLog(@"%@-=--=",text);
     
-    
-    
-    
-    
-    
     return YES;
 }
 

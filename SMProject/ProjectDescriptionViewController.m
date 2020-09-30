@@ -21,7 +21,10 @@
 #import "XMLmanage.h"
 #import "InformationManage.h"
 #import "SMOrderControllerViewController.h"
-
+#import "FMDatabase.h"
+#import "FMResultSet.h"
+#import "FMDatabaseAdditions.h"
+#import "UIImageView+WebCache.h"
 #define kAnimationDuration 0.1
 
 
@@ -37,7 +40,6 @@
 }
 
 @property (nonatomic, strong) NSMutableArray * coverImageArray;
-
 @property (nonatomic, strong) NSMutableArray * coverVersionArray;
 @property (nonatomic, strong) NSMutableArray * compArry;
 @property (nonatomic, strong) NSMutableArray * subImages;
@@ -65,7 +67,7 @@ int internetOnline;
 int flag;
 static NSString *backstr = @"-1";//记录返回compid
 static NSString *backname = @"返回";
-
+FMDatabase *__db = nil;
 @implementation ProjectDescriptionViewController
 
 @synthesize coverImageArray = _coverImageArray;
@@ -106,14 +108,24 @@ static NSString *backname = @"返回";
     ProjectManage * manage = [ProjectManage shardSingleton];
     manage.redirectFlag = @"1";
 //    buttonItem = [[UIBarButtonItem alloc] initWithTitle:backname style:UIBarButtonItemStyleBordered target:self action:@selector(back:)];
-     buttonItem = [[UIBarButtonItem alloc] initWithTitle:@"返回" style:UIBarButtonItemStyleBordered target:self action:@selector(back:)];
+    buttonItem = [[UIBarButtonItem alloc] initWithTitle:@"返回" style:UIBarButtonItemStyleBordered target:self action:@selector(back:)];
     buttonItem.tintColor = [UIColor whiteColor];
     buttonItem.tag = 100;
     self.navigationItem.leftBarButtonItem = buttonItem;
     self.navigationController.navigationBarHidden = NO;
     [self initCollectionView];
+   
+    
+    //判断是否是没网状态，有网则重置数据库
+    if ([self checkInternet])
+    {
+//          [self deleteAllDBTableCover];
+        [self deleteDBWithCompid:@"-1"];
+    }
+    
     
 }
+
 
 - (void)back:(id)sender
 {
@@ -122,23 +134,31 @@ static NSString *backname = @"返回";
         [self.navigationController popToRootViewControllerAnimated:YES];
     }else
     {
-        NSMutableArray *arr = [NSMutableArray arrayWithCapacity:2];
+        NSMutableArray *arr = [NSMutableArray arrayWithCapacity:0];
         arr = [[ProjectManage shardSingleton] findbackBycompId:backstr];
+        
+//        arr = [self findBackByComId:backstr];
         
         NSLog(@"arr is %@",arr);
         [self.collectionView removeFromSuperview];
         [self initviewBybookId:arr];
         //[backArray removeObjectAtIndex:backArray.count - 1];
         
-        if ([self.compArry objectAtIndex:0]) {
+        if (self.compArry.count == 0) {
+            backstr = @"-1";
+        }else{
             backstr = [self.compArry objectAtIndex:0];
         }
+        
         
     }
     
 //    [buttonItem setTitle:backname];
     
 }
+
+
+
 
 - (void)initCollectionView
 {
@@ -177,6 +197,7 @@ static NSString *backname = @"返回";
     if ([self checkInternet])
     {
         internetOnline = 1;
+        [self initDatabaseCover];
         [self getCoverImage];
     }
     else
@@ -486,27 +507,31 @@ static NSString *backname = @"返回";
     self.subIdArray = [NSMutableArray arrayWithCapacity:10];
     backArray = [NSMutableArray arrayWithCapacity:10];
     [[ProjectManage shardSingleton] getBookRecordwithid:backstr retun:&bookArray];
-    
     [backArray addObject:bookArray];
+    
+    
     NSString * path;
     NSString * fileName;
-    
+//    [self deleteAllDBTableCover];
     for (ProjectInfo * book in bookArray)
     {
         NSArray * links = [book.imgUrl componentsSeparatedByString:@"/"];
         fileName = [links objectAtIndex:2];
         path = [NSString stringWithFormat:@"%@/%@/%@",dirPath,book.name,fileName];
         [self.idArray addObject:book.imagesIDs];
-        [[ProjectManage shardSingleton] insertCompInDB:book];
         [self.coverVersionArray addObject:book.name];
         [self.compArry addObject:book.compId];
         [self.subImages addObject:book.imagesIDs];
         [self.subIdArray addObject:book.ID];
+//         [[ProjectManage shardSingleton] insertCompInDB:book];
+        [self insertCoverWithModel:book];
+        
         
         if ([fileManager fileExistsAtPath:path])
         {
             UIImage * image = [[UIImage alloc] initWithContentsOfFile:path];
             //            [self.coverVersionArray addObject:book.name];
+            NSLog(@"path=%@",path);
             [self.coverImageArray addObject:image];
         }
         else
@@ -522,6 +547,47 @@ static NSString *backname = @"返回";
         }
         
     }
+}
+
+- (void)initDatabaseCover
+{
+    
+    NSString *sandBoxPath = [NSHomeDirectory() stringByAppendingPathComponent:@"Library/Caches/Project"];
+    NSFileManager *manager = [NSFileManager defaultManager];
+    if ([manager fileExistsAtPath:sandBoxPath]) {
+        NSLog(@"文件存在");
+        __db = [[FMDatabase alloc] initWithPath:sandBoxPath];
+        [__db setShouldCacheStatements:YES];
+        [__db open];
+    }else{
+        NSLog(@"文件没找到");
+    }
+    
+}
+//删除数据
+- (void)deleteDBWithCompid:(NSString *)compid
+{
+    [__db open];
+    BOOL success = [__db executeUpdate:[NSString stringWithFormat:@"DELETE FROM cover WHERE compid = '%@'",compid]];
+    if (!success) {
+        NSLog(@"删除数据失败%@",[__db lastErrorMessage]);
+    }else{
+        NSLog(@"删除数据成功");
+    }
+    [__db close];
+}
+
+//插入数据
+- (void)insertCoverWithModel:(ProjectInfo *)book
+{
+    [__db open];
+    BOOL success = [__db executeUpdate:@"INSERT INTO cover (id,name,imgUrl,compId,imageIds) values (?,?,?,?,?)",book.ID,book.name,book.imgUrl,book.compId,book.imagesIDs];
+    if (!success) {
+        NSLog(@"%@",[__db lastErrorMessage]);
+    }else{
+        NSLog(@"添加数据成功");
+    }
+    [__db close];
 }
 
 
@@ -583,7 +649,6 @@ static NSString *backname = @"返回";
 //    cell.layer.cornerRadius = 8;
     UIImageView *imageView = [[UIImageView alloc] initWithImage:[self.coverImageArray objectAtIndex:indexPath.row]];
     imageView.frame = CGRectMake(0, 250, 140, 160);
-    
     [cell.contentView addSubview:imageView];
     
     UILabel *lable = [[UILabel alloc] initWithFrame:CGRectMake(100, 5, 30, 250)];
@@ -819,7 +884,7 @@ static NSString *backname = @"返回";
         if ([fileManager fileExistsAtPath:path])
         {
             UIImage * image = [[UIImage alloc] initWithContentsOfFile:path];
-            
+
             if (![self.detailImageArray containsObject:fileName])
             {
                 NSLog(@"local file");
@@ -923,17 +988,22 @@ static NSString *backname = @"返回";
     if ( [[self.subImages objectAtIndex:indexPath.row] isEqualToString:@""]||[[self.subImages objectAtIndex:indexPath.row] isEqualToString:@"null"] || [self.subImages objectAtIndex:indexPath.row] == nil) {
         [self.collectionView removeFromSuperview];
         self.coverImageArray = nil;
+       
         
         NSMutableArray * bookArray = [self getdatawithindexPath:indexPath.row];
         [backArray addObject:bookArray];
         // NSLog(@"backarray is %@",backArray);
-        
+        //删除compid一样的数据，更新数据库
+        if (bookArray.count > 0) {
+            ProjectInfo * book = [bookArray objectAtIndex:0];
+            [self deleteDBWithCompid:book.compId];
+        }
         
         [self initviewBybookId:bookArray];
         
         NSLog(@"self.comparry is %lu",self.compArry.count);
         
-        if (!self.compArry.count == 0) {
+        if (self.compArry.count != 0) {
             backstr = [self.compArry objectAtIndex:0];
         }
         
@@ -981,24 +1051,26 @@ static NSString *backname = @"返回";
         self.compArry = [NSMutableArray arrayWithCapacity:10];
         self.subImages = [NSMutableArray arrayWithCapacity:10];
         self.subIdArray = [NSMutableArray arrayWithCapacity:10];
-        
-        
-        NSString * path;
+        NSArray * dir = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
+        NSString * documentDirectory = [dir objectAtIndex:0];
+        NSString * dirPath = [documentDirectory stringByAppendingPathComponent:@"cover1"];
         NSString * fileName;
         
         NSLog(@"bookArray is %@",bookArray);
         for (ProjectInfo * book in bookArray)
         {
-            [[ProjectManage shardSingleton] insertCompInDB:book];
-            
+//            [[ProjectManage shardSingleton] insertCompInDB:book];
+            [self insertCoverWithModel:book];
             
             UIImage * image = nil;
             
-            NSString *filePath = [self getcoverimagepath:book.name];
-            //            [self.coverVersionArray addObject:book.name];
+//            NSString *filePath = [self getcoverimagepath:book.name];
+            NSArray * links = [book.imgUrl componentsSeparatedByString:@"/"];
+            fileName = [links objectAtIndex:2];
+            NSString *path = [NSString stringWithFormat:@"%@/%@/%@",dirPath,book.name,fileName];
             NSLog(@"name is %@",book.name);
-            if (filePath) {
-                image = [UIImage imageWithContentsOfFile:filePath];
+            if (path) {
+                image = [UIImage imageWithContentsOfFile:path];
                 
             }else{
                 
@@ -1008,8 +1080,8 @@ static NSString *backname = @"返回";
                 }else{
                     
                 }
-                
             }
+            
             
             if (image) {
                 [self.coverImageArray addObject:image];
@@ -1019,8 +1091,6 @@ static NSString *backname = @"返回";
             [self.compArry addObject:book.compId];
             [self.subImages addObject:book.imagesIDs];
             NSLog(@"%@",book.imagesIDs);
-            
-            
             [self.subIdArray addObject:book.ID];
             [self.idArray addObject:book.imagesIDs];
             
@@ -1046,6 +1116,10 @@ static NSString *backname = @"返回";
         NSLog(@"bookarray is %@",[self.subIdArray objectAtIndex:row]);
         
         [[ProjectManage shardSingleton] getBookRecordwithid:[self.subIdArray objectAtIndex:row] retun:&bookArray];
+        for (ProjectInfo * book in bookArray){
+            [self insertCoverWithModel:book];
+        }
+        
         
     }else
     {
@@ -1122,20 +1196,28 @@ static NSString *backname = @"返回";
     self.subImages = [NSMutableArray arrayWithCapacity:10];
     self.subIdArray = [NSMutableArray arrayWithCapacity:10];
     backArray = [NSMutableArray arrayWithCapacity:10];
-    
-    
+    NSArray * dir = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
+    NSString * documentDirectory = [dir objectAtIndex:0];
+    NSString * dirPath = [documentDirectory stringByAppendingPathComponent:@"cover1"];
     NSMutableArray *array = [NSMutableArray arrayWithCapacity:10];
+    NSString * fileName;
     [[ProjectManage shardSingleton] searchInDbBycompId:backstr returnArray:&array];
     [backArray addObject:array];
     for (ProjectInfo *projectinfo in array) {
         [self.subIdArray addObject:projectinfo.ID];
         [self.subImages addObject:projectinfo.imagesIDs];
         [self.compArry addObject:projectinfo.compId];
+//        NSString *path = [kWSPath stringByAppendingString:projectinfo.imgUrl];
+        NSArray * links = [projectinfo.imgUrl componentsSeparatedByString:@"/"];
+        fileName = [links objectAtIndex:2];
+        NSString *path = [NSString stringWithFormat:@"%@/%@/%@",dirPath,projectinfo.name,fileName];
+
         NSString *filePath = [self getcoverimagepath:projectinfo.name];
+        NSLog(@"filePath = %@",filePath);
         [self.coverVersionArray addObject:projectinfo.name];
         NSLog(@"name is %@",projectinfo.name);
-        if (filePath) {
-            UIImage * image = [UIImage imageWithContentsOfFile:filePath];
+        if (path) {
+            UIImage * image = [UIImage imageWithContentsOfFile:path];
             [self.coverImageArray addObject:image];
         }else{
             

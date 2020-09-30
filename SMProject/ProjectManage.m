@@ -68,7 +68,6 @@
 @synthesize produce = _produce;
 @synthesize type = _type;
 @synthesize skpmount = skpmount_;
-
 - (OrderInfo *)init
 {
     self = [super init];
@@ -85,10 +84,11 @@
     static ProjectManage * instance =  nil;
     dispatch_once(&pred, ^{
         instance = [[self alloc] init];
-        
     });
     return instance;
 }
+
+
 
 - (NSDictionary *)jsonParseWithURL:(NSString *)imageUrl
 {
