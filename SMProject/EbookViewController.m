@@ -19,6 +19,9 @@
 #import "XMLmanage.h"
 #import "SMOrderControllerViewController.h"
 #import "ProjectManage.h"
+#import "FMDatabase.h"
+#import "FMResultSet.h"
+#import "FMDatabaseAdditions.h"
 
 #define kAnimationDuration 0.1
 #define BGCOLOR [UIColor colorWithRed:251.0/255 green:168.0/255 blue:196.0/255 alpha:1]//设置标题颜色
@@ -64,7 +67,7 @@ int internetOnline;
 static NSString *backstr = @"-1";//记录返回compid
 //int internetOnline;//判断网络
 int flag;
-
+FMDatabase *__ebookDb = nil;
 @implementation EbookViewController
 
 @synthesize coverImageArray = _coverImageArray;
@@ -110,6 +113,14 @@ int flag;
     self.datesource = [NSMutableArray arrayWithCapacity:1];
     self.mutabledate = [NSMutableArray arrayWithCapacity:3];
    
+    //判断是否是没网状态，有网则重置数据库
+    if ([self checkInternet])
+    {
+        //          [self deleteAllDBTableCover];
+        [self deleteDBWithCompid:@"-1"];
+    }
+    
+    
 }
 
 - (void)back
@@ -180,6 +191,7 @@ int flag;
     if ([self checkInternet])
     {
         internetOnline=1;
+        [self initDatabaseCover];
         [self getCoverImage];
     }
     else
@@ -364,11 +376,13 @@ int flag;
     [lable removeFromSuperview];
     
     self.NumberArray = [NSMutableArray arrayWithCapacity:3];
+    
     for (int i = 1; i< self.datesource.count +1; i++) {
          NSIndexPath *pathOne=[NSIndexPath indexPathForRow:i inSection:0];
         CustomCell *cellone = (CustomCell *)[tableViewFirst cellForRowAtIndexPath:pathOne];
         [self.NumberArray addObject: cellone.textfiled.text];
     }
+    
     NSLog(@"this is numberArray value: %@",self.NumberArray);
     
     [FirstView removeFromSuperview];
@@ -985,7 +999,8 @@ int flag;
         fileName = [links objectAtIndex:2];
         path = [NSString stringWithFormat:@"%@/%@/%@",dirPath,book.name,fileName];
         [self.idArray addObject:book.imagesIDs];
-        [[EBookManage shardSingleton] insertCompInDB:book];
+//        [[EBookManage shardSingleton] insertCompInDB:book];
+        [self insertCoverWithModel:book];
         [self.coverVersionArray addObject:book.name];
         [self.compArry addObject:book.compId];
         [self.subImages addObject:book.imagesIDs];
@@ -1412,7 +1427,10 @@ int flag;
         NSMutableArray * bookArray = [self getdatawithindexPath:indexPath.row];
         [backArray addObject:bookArray];
         // NSLog(@"backarray is %@",backArray);
-        
+        if (bookArray.count > 0) {
+            EBookInfo * book = [bookArray objectAtIndex:0];
+            [self deleteDBWithCompid:book.compId];
+        }
         
         [self initviewBybookId:bookArray];
         
@@ -1451,23 +1469,27 @@ int flag;
         self.compArry = [NSMutableArray arrayWithCapacity:10];
         self.subImages = [NSMutableArray arrayWithCapacity:10];
         self.subIdArray = [NSMutableArray arrayWithCapacity:10];
-        
-        NSString * path;
+        NSArray * dir = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
+        NSString * documentDirectory = [dir objectAtIndex:0];
+        NSString * dirPath = [documentDirectory stringByAppendingPathComponent:@"cover"];
         NSString * fileName;
         
         NSLog(@"bookArray is %@",bookArray);
         for (EBookInfo * book in bookArray)
         {
-            [[EBookManage shardSingleton] insertCompInDB:book];
-            
+//            [[EBookManage shardSingleton] insertCompInDB:book];
+            [self insertCoverWithModel:book];
             
             UIImage * image = nil;
             
-            NSString *filePath = [self getcoverimagepath:book.name];
+//            NSString *filePath = [self getcoverimagepath:book.name];
             //            [self.coverVersionArray addObject:book.name];
+            NSArray * links = [book.imgUrl componentsSeparatedByString:@"/"];
+            fileName = [links objectAtIndex:2];
+            NSString *path = [NSString stringWithFormat:@"%@/%@/%@",dirPath,book.name,fileName];
             NSLog(@"name is %@",book.name);
-            if (filePath) {
-                image = [UIImage imageWithContentsOfFile:filePath];
+            if (path) {
+                image = [UIImage imageWithContentsOfFile:path];
                 //[self.coverImageArray addObject:image];
             }else{
                 
@@ -1592,20 +1614,26 @@ int flag;
     self.subImages = [NSMutableArray arrayWithCapacity:10];
     self.subIdArray = [NSMutableArray arrayWithCapacity:10];
     backArray = [NSMutableArray arrayWithCapacity:10];
-    
-    
+    NSArray * dir = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
+    NSString * documentDirectory = [dir objectAtIndex:0];
+    NSString * dirPath = [documentDirectory stringByAppendingPathComponent:@"cover"];
     NSMutableArray *array = [NSMutableArray arrayWithCapacity:10];
+    NSString * fileName;
     [[EBookManage shardSingleton] searchInDbBycompId:backstr returnArray:&array];
     [backArray addObject:array];
     for (EBookInfo *projectinfo in array) {
         [self.subIdArray addObject:projectinfo.ID];
         [self.subImages addObject:projectinfo.imagesIDs];
         [self.compArry addObject:projectinfo.compId];
-        NSString *filePath = [self getcoverimagepath:projectinfo.name];
+//        NSString *filePath = [self getcoverimagepath:projectinfo.name];
+        NSArray * links = [projectinfo.imgUrl componentsSeparatedByString:@"/"];
+        fileName = [links objectAtIndex:2];
+        NSString *path = [NSString stringWithFormat:@"%@/%@/%@",dirPath,projectinfo.name,fileName];
+
         [self.coverVersionArray addObject:projectinfo.name];
         NSLog(@"name is %@",projectinfo.name);
-        if (filePath) {
-            UIImage * image = [UIImage imageWithContentsOfFile:filePath];
+        if (path) {
+            UIImage * image = [UIImage imageWithContentsOfFile:path];
             [self.coverImageArray addObject:image];
         }else{
             
@@ -1654,6 +1682,47 @@ int flag;
     }
     
     return nil;
+}
+
+- (void)initDatabaseCover
+{
+    
+    NSString *sandBoxPath = [NSHomeDirectory() stringByAppendingPathComponent:@"Library/Caches/EBook"];
+    NSFileManager *manager = [NSFileManager defaultManager];
+    if ([manager fileExistsAtPath:sandBoxPath]) {
+        NSLog(@"文件存在");
+        __ebookDb = [[FMDatabase alloc] initWithPath:sandBoxPath];
+        [__ebookDb setShouldCacheStatements:YES];
+        [__ebookDb open];
+    }else{
+        NSLog(@"文件没找到");
+    }
+    
+}
+//删除数据
+- (void)deleteDBWithCompid:(NSString *)compid
+{
+    [__ebookDb open];
+    BOOL success = [__ebookDb executeUpdate:[NSString stringWithFormat:@"DELETE FROM cover WHERE compid = '%@'",compid]];
+    if (!success) {
+        NSLog(@"删除数据失败%@",[__ebookDb lastErrorMessage]);
+    }else{
+        NSLog(@"删除数据成功");
+    }
+    [__ebookDb close];
+}
+
+//插入数据
+- (void)insertCoverWithModel:(EBookInfo *)book
+{
+    [__ebookDb open];
+    BOOL success = [__ebookDb executeUpdate:@"INSERT INTO cover (id,name,imgUrl,compid,imageIds) values (?,?,?,?,?)",book.ID,book.name,book.imgUrl,book.compId,book.imagesIDs];
+    if (!success) {
+        NSLog(@"%@",[__ebookDb lastErrorMessage]);
+    }else{
+        NSLog(@"添加数据成功");
+    }
+    [__ebookDb close];
 }
 
 
