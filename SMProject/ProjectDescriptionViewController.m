@@ -589,7 +589,18 @@ FMDatabase *__db = nil;
     }
     [__db close];
 }
-
+//删除数据
+- (void)deleteDBWithVersion:(NSString *)version
+{
+    [__db open];
+    BOOL success = [__db executeUpdate:[NSString stringWithFormat:@"DELETE FROM bookInfo WHERE version = '%@'",version]];
+    if (!success) {
+        NSLog(@"删除数据失败%@",[__db lastErrorMessage]);
+    }else{
+        NSLog(@"删除数据成功");
+    }
+    [__db close];
+}
 
 - (void)getDetailImageFromArray:(NSArray *)array
 {
@@ -781,6 +792,7 @@ FMDatabase *__db = nil;
     [NSThread detachNewThreadSelector:@selector(getDetailImageFromArray:) toTarget:self withObject:array];
     
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        [self deleteDBWithVersion:bVersion];
         for (ProjectInfo * book in array)
         {
             PImageInfo * imageInfo = [[PImageInfo alloc] init];
@@ -838,19 +850,23 @@ FMDatabase *__db = nil;
     {
         if (![self checkInternet])
         {
-            [SGInfoAlert showInfo:@"本地无存储数据文件，请连接网络后重试！"
-                          bgColor:[[UIColor blackColor] CGColor]
-                           inView:self.view
-                         vertical:0.4];
-            
-            return;
+//            [SGInfoAlert showInfo:@"本地无存储数据文件，请连接网络后重试！"
+//                          bgColor:[[UIColor blackColor] CGColor]
+//                           inView:self.view
+//                         vertical:0.4];
+//
+//            return;
         }else{
         
      //   if ([self checkInternet]) {
-            [self saveResourceByDownloadWithIDs:onLineID];
-            return;
+//            [self saveResourceByDownloadWithIDs:onLineID];
+//            return;
     //    }
     }
+    }
+    if ([self checkInternet]) {
+    [self saveResourceByDownloadWithIDs:onLineID];
+    return;
     }
     
     NSArray * r = [[ProjectManage shardSingleton] getBookRecordByVersion:bVersion];

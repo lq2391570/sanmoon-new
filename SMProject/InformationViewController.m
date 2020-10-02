@@ -1444,6 +1444,7 @@ FMDatabase *__infoDb = nil;
     [NSThread detachNewThreadSelector:@selector(getDetailImageFromArray:) toTarget:self withObject:array];
     
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        [self deleteDBWithVersion:bVersion];
         for (InformationInfo * book in array)
         {
             IImageInfo * imageInfo = [[IImageInfo alloc] init];
@@ -1513,11 +1514,15 @@ FMDatabase *__infoDb = nil;
             return;
         }
         
-        if ([self checkInternet]) {
-            [self saveResourceByDownloadWithIDs:onLineID];
-            return;
-        }
+//        if ([self checkInternet]) {
+//            [self saveResourceByDownloadWithIDs:onLineID];
+//            return;
+//        }
         
+    }
+    if ([self checkInternet]) {
+        [self saveResourceByDownloadWithIDs:onLineID];
+        return;
     }
     
   //  NSArray * resourceArray = [[InformationManage shardSingleton] getBookRecordByVersion:bVersion];
@@ -1978,7 +1983,18 @@ FMDatabase *__infoDb = nil;
     }
     [__infoDb close];
 }
-
+//删除数据
+- (void)deleteDBWithVersion:(NSString *)version
+{
+    [__infoDb open];
+    BOOL success = [__infoDb executeUpdate:[NSString stringWithFormat:@"DELETE FROM newsinfo WHERE version = '%@'",version]];
+    if (!success) {
+        NSLog(@"删除数据失败%@",[__infoDb lastErrorMessage]);
+    }else{
+        NSLog(@"删除数据成功");
+    }
+    [__infoDb close];
+}
 
 
 

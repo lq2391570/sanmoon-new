@@ -774,7 +774,7 @@ NSLog(@"self.data_updata==%@",self.data_updata);
                 
                 [self deleteBookInfoOfEBook:bookInfo.name];
               NSArray *imageArray=[dict objectForKey:@"images"];
-                NSLog(@"%d---",imageArray.count);
+                NSLog(@"huaceImageArray = %@---",imageArray);
                 for (NSDictionary *imageDic in imageArray) {
                     ImageInfo *imgInfo=[[ImageInfo alloc] init];
                     imgInfo.type=NULL;

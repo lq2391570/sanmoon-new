@@ -118,6 +118,7 @@ FMDatabase *__ebookDb = nil;
     {
         //          [self deleteAllDBTableCover];
         [self deleteDBWithCompid:@"-1"];
+        
     }
     
     
@@ -136,7 +137,7 @@ FMDatabase *__ebookDb = nil;
        
         NSLog(@"arr is %@",arr);
         [self.collectionView removeFromSuperview];
-       [self initviewBybookId:arr];
+        [self initviewBybookId:arr];
         //[backArray removeObjectAtIndex:backArray.count - 1];
         
         if ([self.compArry objectAtIndex:0]) {
@@ -1045,7 +1046,7 @@ FMDatabase *__ebookDb = nil;
       //  [self.photos addObject:[MWPhoto photoWithURL:[NSURL URLWithString:path]]]
     }
     if ([self.photos count] > 0) {
-        [self performSelectorOnMainThread:@selector(displayPhoto) withObject:nil waitUntilDone:YES];
+//        [self performSelectorOnMainThread:@selector(displayPhoto) withObject:nil waitUntilDone:YES];
     }
 }
 
@@ -1210,15 +1211,15 @@ FMDatabase *__ebookDb = nil;
     
     self.detailRecordArray = array;
     [NSThread detachNewThreadSelector:@selector(getDetailImageFromArray:) toTarget:self withObject:array];
-    
+
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        [self deleteDBWithVersion:bVersion];
         for (EBookInfo * book in array)
         {
             ImageInfo * imageInfo = [[ImageInfo alloc] init];
             imageInfo.bookVersion = bVersion;
             imageInfo.imgUrl =  book.imgUrl;
            // NSLog(@"hhahahaahahhhahahahahahahahahahah isssss     %@" , imageInfo.linkurl);
-            
             if ([book.link count] > 0)
             {
                 for (NSDictionary * dict in book.link)
@@ -1233,6 +1234,7 @@ FMDatabase *__ebookDb = nil;
                     if (![[EBookManage shardSingleton] isExistImageWithName:imageInfo.linkurl withVersion:imageInfo.bookVersion withType:1])
                     {
                         [[EBookManage shardSingleton] insertBookInfo:imageInfo];
+//                        [self createDirectoryPath:@"ephoto" withName:imageInfo.bookVersion];
                     }
                 }
             }
@@ -1241,6 +1243,7 @@ FMDatabase *__ebookDb = nil;
                 if (![[EBookManage shardSingleton] isExistImageWithName:imageInfo.imgUrl withVersion:imageInfo.bookVersion withType:0])
                 {
                     [[EBookManage shardSingleton] insertBookInfo:imageInfo];
+//                    [self createDirectoryPath:@"ephoto" withName:imageInfo.bookVersion];
                 }
             }
         }
@@ -1248,6 +1251,17 @@ FMDatabase *__ebookDb = nil;
     
 }
 
+- (void)createDirectoryPath:(NSString *)upname withName:(NSString *)name
+{
+    NSArray * dir = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
+    NSString * documentDirectory = [dir objectAtIndex:0];
+    NSString * dirPath = [documentDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"/%@/%@",upname,name]];
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    if (![fileManager fileExistsAtPath:dirPath])
+    {
+        [fileManager createDirectoryAtPath:dirPath withIntermediateDirectories:YES attributes:nil error:nil];
+    }
+}
 - (void)getResourceByVersion:(NSString *)onLineID
 {
     NSLog(@"the onlineID IS %@",onLineID);
@@ -1272,19 +1286,22 @@ FMDatabase *__ebookDb = nil;
     {
         if (![self checkInternet])
         {
-            [SGInfoAlert showInfo:@"本地无存储数据文件，请连接网络后重试！"
-                          bgColor:[[UIColor blackColor] CGColor]
-                           inView:self.view
-                         vertical:0.4];
-            
-            return;
+//            [SGInfoAlert showInfo:@"本地无存储数据文件，请连接网络后重试！"
+//                          bgColor:[[UIColor blackColor] CGColor]
+//                           inView:self.view
+//                         vertical:0.4];
+//
+//            return;
         }
         
-        if ([self checkInternet]) {
-            [self saveResourceByDownloadWithIDs:onLineID];
-            return;
-        }
+//        if ([self checkInternet]) {
+//            [self saveResourceByDownloadWithIDs:onLineID];
+//            return;
+//        }
         
+    }
+    if ([self checkInternet]) {
+        [self saveResourceByDownloadWithIDs:onLineID];
     }
     
    // NSArray * resourceArray = [[EBookManage shardSingleton] getBookRecordByVersion:bVersion];
@@ -1359,10 +1376,10 @@ FMDatabase *__ebookDb = nil;
     }
     else
     {
-        [SGInfoAlert showInfo:@"本地无存储数据文件，请连接网络后重试！"
-                      bgColor:[[UIColor blackColor] CGColor]
-                       inView:self.view
-                     vertical:0.4];
+//        [SGInfoAlert showInfo:@"本地无存储数据文件，请连接网络后重试！"
+//                      bgColor:[[UIColor blackColor] CGColor]
+//                       inView:self.view
+//                     vertical:0.4];
     }
     
 }
@@ -1634,7 +1651,10 @@ FMDatabase *__ebookDb = nil;
         NSLog(@"name is %@",projectinfo.name);
         if (path) {
             UIImage * image = [UIImage imageWithContentsOfFile:path];
-            [self.coverImageArray addObject:image];
+            if (image != nil) {
+                [self.coverImageArray addObject:image];
+            }
+            
         }else{
             
             
@@ -1704,6 +1724,31 @@ FMDatabase *__ebookDb = nil;
 {
     [__ebookDb open];
     BOOL success = [__ebookDb executeUpdate:[NSString stringWithFormat:@"DELETE FROM cover WHERE compid = '%@'",compid]];
+    if (!success) {
+        NSLog(@"删除数据失败%@",[__ebookDb lastErrorMessage]);
+    }else{
+        NSLog(@"删除数据成功");
+    }
+    [__ebookDb close];
+}
+
+//删除数据
+- (void)deleteDBWithVersion:(NSString *)version
+{
+    [__ebookDb open];
+    BOOL success = [__ebookDb executeUpdate:[NSString stringWithFormat:@"DELETE FROM bookInfo WHERE version = '%@'",version]];
+    if (!success) {
+        NSLog(@"删除数据失败%@",[__ebookDb lastErrorMessage]);
+    }else{
+        NSLog(@"删除数据成功");
+    }
+    [__ebookDb close];
+}
+//删除数据
+- (void)deleteDBWithVersion
+{
+    [__ebookDb open];
+    BOOL success = [__ebookDb executeUpdate:[NSString stringWithFormat:@"DELETE FROM bookInfo"]];
     if (!success) {
         NSLog(@"删除数据失败%@",[__ebookDb lastErrorMessage]);
     }else{
