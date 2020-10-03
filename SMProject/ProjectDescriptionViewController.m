@@ -1084,21 +1084,19 @@ FMDatabase *__db = nil;
             NSArray * links = [book.imgUrl componentsSeparatedByString:@"/"];
             fileName = [links objectAtIndex:2];
             NSString *path = [NSString stringWithFormat:@"%@/%@/%@",dirPath,book.name,fileName];
+            
             NSLog(@"name is %@",book.name);
-            if (path) {
-                image = [UIImage imageWithContentsOfFile:path];
-                
+            if ([self checkInternet]) {
+                path = [kWSPath stringByAppendingString:book.imgUrl];
+                image = [self getImageFromURL:path];
+                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                    [[ProjectManage shardSingleton] saveImage:image withURL:path withCoverName:book.name];
+                });
             }else{
-                
-                if ([self checkInternet]) {
-                    path = [kWSPath stringByAppendingString:book.imgUrl];
-                    image = [self getImageFromURL:path];
-                }else{
-                    
-                }
+                image = [UIImage imageWithContentsOfFile:path];
             }
             
-            
+        
             if (image) {
                 [self.coverImageArray addObject:image];
             }
@@ -1111,9 +1109,7 @@ FMDatabase *__db = nil;
             [self.idArray addObject:book.imagesIDs];
             
             
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                [[ProjectManage shardSingleton] saveImage:image withURL:path withCoverName:book.name];
-            });
+            
             
         }
         
