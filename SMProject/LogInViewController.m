@@ -509,17 +509,18 @@
     [request setCompletionBlock:^{
         NSDictionary *dic=[NSJSONSerialization JSONObjectWithData:request.responseData options:NSJSONReadingMutableContainers error:nil];
         NSLog(@"=-=%@",dic);
-        if ([dic isEqual:[NSNull null]]) {
+        if ([dic isEqual:[NSNull null]] || dic == nil) {
             [SVProgressHUD showErrorWithStatus:@"服务器异常"];
         }else{
-        [tempArray addObject:dic];
+            [tempArray addObject:dic];
+            if (tempArray) {
+                complete(tempArray);
+            }
         }
 //        self.cardStatus=[dic objectForKey:@"status"];
 //        NSDictionary *dic2=[dic objectForKey:@"data"];
 //        self.shopCode=[dic2 objectForKey:@"shopCode"];
-        if (tempArray) {
-            complete(tempArray);
-        }
+        
        
     }];
     
