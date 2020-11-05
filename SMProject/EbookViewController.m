@@ -237,7 +237,6 @@ FMDatabase *__ebookDb = nil;
     
     [self getLinksWithOutInternet];
  //   [self addFirstView];
-    
    // [self sellMyGoods];
 }
 //添加第一个页面
@@ -431,7 +430,6 @@ FMDatabase *__ebookDb = nil;
     [button2 setTitle:@"下一步" forState:UIControlStateNormal];
     [button2 addTarget:self action:@selector(Button2ClickWithTwo) forControlEvents:UIControlEventTouchUpInside];
     [FirstView addSubview:button2];
-
     [self.browser.view addSubview:FirstView];
 }
 //第二层页面返回按钮
@@ -1181,8 +1179,6 @@ FMDatabase *__ebookDb = nil;
         NSArray * array = [videoPath componentsSeparatedByString:@"resources/videos"];
         fileName = [array objectAtIndex:1];
     }
-    
-    
     if (![fileManager fileExistsAtPath:path])
     {
         [fileManager createDirectoryAtPath:path withIntermediateDirectories:NO attributes:nil error:&error];

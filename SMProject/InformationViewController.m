@@ -183,7 +183,6 @@ FMDatabase *__infoDb = nil;
     BgimageView.image = [UIImage imageNamed:@"smbg模糊bg"];
     //    [self.collectionV addSubview:BgimageView];
     [self.collectionView setBackgroundView:BgimageView];
-    
     self.collectionView.delegate = self;
     self.collectionView.dataSource = self;
     self.collectionView.backgroundColor = [UIColor whiteColor];
@@ -530,11 +529,7 @@ FMDatabase *__infoDb = nil;
         [self.priceArray addObject:[singlearray objectAtIndex:1]];
         [self.rateArray addObject:[singlearray objectAtIndex:2]];
         [self.IDArray addObject:[singlearray objectAtIndex:3]];
-        
-        
         [self.numArray addObject:[self.NumberArray objectAtIndex:0]];
-        
-        
     }
     else
     {
@@ -622,8 +617,6 @@ FMDatabase *__infoDb = nil;
     [button2 setTitle:@"下一步" forState:UIControlStateNormal];
     [button2 addTarget:self action:@selector(Button2ClickWithTwo) forControlEvents:UIControlEventTouchUpInside];
     [buttonview addSubview:button2];
-    
-    
     [self.browser.view addSubview:buttonview];
 }
 
@@ -1263,7 +1256,7 @@ FMDatabase *__infoDb = nil;
         [self.photos addObject:[MWPhoto photoWithURL:[NSURL URLWithString: path] withName:bVersion]];
     }
     if ([self.photos count] > 0) {
-        [self performSelectorOnMainThread:@selector(displayPhoto) withObject:nil waitUntilDone:YES];
+//        [self performSelectorOnMainThread:@selector(displayPhoto) withObject:nil waitUntilDone:YES];
     }
 }
 
@@ -1522,7 +1515,6 @@ FMDatabase *__infoDb = nil;
     }
     if ([self checkInternet]) {
         [self saveResourceByDownloadWithIDs:onLineID];
-        return;
     }
     
   //  NSArray * resourceArray = [[InformationManage shardSingleton] getBookRecordByVersion:bVersion];
@@ -1580,18 +1572,17 @@ FMDatabase *__infoDb = nil;
                 }
                 
             }
-            //            if ([self checkInternet])
-            //            {
-            //                NSLog(@"online file");
-            //                path = [kWSPath stringByAppendingString:imageInfo.imgUrl];
-            //                [self.detailImageArray addObject:fileName];
-            //                [self.photos addObject:[MWPhoto photoWithURL:[NSURL URLWithString: path] withName:bVersion]];
-            //            }
-            
+       
         }
         else
         {
-            
+            if ([self checkInternet])
+            {
+                NSLog(@"online file");
+                path = [kWSPath stringByAppendingString:imageInfo.imgUrl];
+                [self.detailImageArray addObject:fileName];
+                [self.photos addObject:[MWPhoto photoWithURL:[NSURL URLWithString: path] withName:bVersion]];
+            }
         }
         
     }
@@ -1676,7 +1667,7 @@ FMDatabase *__infoDb = nil;
         }
         [self initviewBybookId:bookArray];
         
-        if (!self.compArry.count == 0) {
+        if (self.compArry.count != 0) {
             backstr = [self.compArry objectAtIndex:0];
         }
         return;
@@ -1738,19 +1729,19 @@ FMDatabase *__infoDb = nil;
             fileName = [links objectAtIndex:2];
             NSString *path = [NSString stringWithFormat:@"%@/%@/%@",dirPath,book.name,fileName];
             NSLog(@"name is %@",book.name);
-            if (path) {
-                image = [UIImage imageWithContentsOfFile:path];
-                //[self.coverImageArray addObject:image];
+            if ([self checkInternet]) {
+                path = [kWSPath stringByAppendingString:book.imgUrl];
+                image = [self getImageFromURL:path];
             }else{
-                
-                if ([self checkInternet]) {
-                    path = [kWSPath stringByAppendingString:book.imgUrl];
-                    image = [self getImageFromURL:path];
+                if (path) {
+                    image = [UIImage imageWithContentsOfFile:path];
+                    //[self.coverImageArray addObject:image];
                 }else{
                     
+                    
                 }
-                
             }
+           
             
             if (image) {
                 [self.coverImageArray addObject:image];
@@ -1760,13 +1751,11 @@ FMDatabase *__infoDb = nil;
             [self.compArry addObject:book.compId];
             [self.subImages addObject:book.imagesIDs];
             NSLog(@"%@",book.imagesIDs);
-            
-            
             [self.subIdArray addObject:book.ID];
             [self.idArray addObject:book.imagesIDs];
             
             
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                 [[InformationManage shardSingleton] saveImage:image withURL:path withCoverName:book.name];
             });
             

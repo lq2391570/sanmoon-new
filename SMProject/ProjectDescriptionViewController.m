@@ -114,7 +114,7 @@ FMDatabase *__db = nil;
     self.navigationItem.leftBarButtonItem = buttonItem;
     self.navigationController.navigationBarHidden = NO;
     [self initCollectionView];
-   
+    
     
     //判断是否是没网状态，有网则重置数据库
     if ([self checkInternet])
@@ -122,7 +122,6 @@ FMDatabase *__db = nil;
 //          [self deleteAllDBTableCover];
         [self deleteDBWithCompid:@"-1"];
     }
-    
     
 }
 
@@ -622,7 +621,7 @@ FMDatabase *__db = nil;
       //  [self.photos addObject:[MWPhoto photoWithURL:[NSURL URLWithString: path]]];
     }
     if ([self.photos count] > 0) {
-        [self performSelectorOnMainThread:@selector(displayPhoto) withObject:nil waitUntilDone:YES];
+//        [self performSelectorOnMainThread:@selector(displayPhoto) withObject:nil waitUntilDone:YES];
     }
 }
 
@@ -846,27 +845,9 @@ FMDatabase *__db = nil;
     NSString * resourcePath = [NSString stringWithFormat:@"%@/%@",dirPath,bVersion];
     
     NSFileManager *fileManager = [NSFileManager defaultManager];
-    if (![fileManager fileExistsAtPath:resourcePath])
-    {
-        if (![self checkInternet])
-        {
-//            [SGInfoAlert showInfo:@"本地无存储数据文件，请连接网络后重试！"
-//                          bgColor:[[UIColor blackColor] CGColor]
-//                           inView:self.view
-//                         vertical:0.4];
-//
-//            return;
-        }else{
-        
-     //   if ([self checkInternet]) {
-//            [self saveResourceByDownloadWithIDs:onLineID];
-//            return;
-    //    }
-    }
-    }
+   
     if ([self checkInternet]) {
     [self saveResourceByDownloadWithIDs:onLineID];
-    return;
     }
     
     NSArray * r = [[ProjectManage shardSingleton] getBookRecordByVersion:bVersion];
@@ -926,11 +907,7 @@ FMDatabase *__db = nil;
 //                [self.photos addObject:[MWPhoto photoWithURL:[NSURL URLWithString: path] withName:bVersion]];
 //            }
         }
-        else
-        {
-            
-        }
-        
+    
     }
 
 //    
@@ -1087,11 +1064,18 @@ FMDatabase *__db = nil;
             
             NSLog(@"name is %@",book.name);
             if ([self checkInternet]) {
-                path = [kWSPath stringByAppendingString:book.imgUrl];
-                image = [self getImageFromURL:path];
-                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                    [[ProjectManage shardSingleton] saveImage:image withURL:path withCoverName:book.name];
-                });
+                NSFileManager *fileManager = [NSFileManager defaultManager];
+                if ([fileManager fileExistsAtPath:path]) {
+                    image = [UIImage imageWithContentsOfFile:path];
+                }else{
+                    path = [kWSPath stringByAppendingString:book.imgUrl];
+                    image = [self getImageFromURL:path];
+                    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                        [[ProjectManage shardSingleton] saveImage:image withURL:path withCoverName:book.name];
+                    });
+                }
+                
+                
             }else{
                 image = [UIImage imageWithContentsOfFile:path];
             }

@@ -164,17 +164,19 @@ FMDatabase *__ddb = nil;
         NSDictionary *dic2=[dic objectForKey:@"data"];
         self.data_updata=[dic2 objectForKey:@"data_update"];
         NSLog(@"self.data_updata==%@",self.data_updata);
+        if ([self.data_updata intValue] == 1) {
+            [self popAlertView];
+        }
     }];
 NSLog(@"self.data_updata==%@",self.data_updata);
   //  [self performSelector:@selector(popAlertView) withObject:nil afterDelay:3];
-    [self popAlertView];
-
+  
 }
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
+    [self popAlertView];
     self.navigationController.navigationBarHidden = YES;
     [self.navigationController.navigationBar setBackgroundImage:[UIImage imageNamed:@"bar"] forBarMetrics:UIBarMetricsDefault];
     
@@ -526,6 +528,9 @@ NSLog(@"self.data_updata==%@",self.data_updata);
     NSLog(@"点击了一键更新");
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         [SVProgressHUD showWithStatus:@"正在更新数据，请稍等" maskType:SVProgressHUDMaskTypeClear];
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(10 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [SVProgressHUD dismiss];
+        });
     });
     
     _dataArray=[[NSArray alloc] init];
