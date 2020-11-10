@@ -185,9 +185,9 @@ FMDatabase *__db = nil;
     [self.view addSubview:self.collectionView];
     UINib *cellNib = [UINib nibWithNibName:@"ProjectCell" bundle:nil];
     [self.collectionView registerNib:cellNib forCellWithReuseIdentifier:@"cell"];
-    UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(didLogPressCellToDelete:)];
-    longPress.delegate = self;
-    [self.collectionView addGestureRecognizer:longPress];
+//    UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(didLogPressCellToDelete:)];
+//    longPress.delegate = self;
+//    [self.collectionView addGestureRecognizer:longPress];
     
 }
 
