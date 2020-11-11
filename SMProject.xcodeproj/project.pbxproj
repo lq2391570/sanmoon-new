@@ -551,7 +551,6 @@
 		FCB4261D1A52A370004E2AE2 /* 圣梦_面部_问题分析_文字背景_15.png in Resources */ = {isa = PBXBuildFile; fileRef = FCB425F61A52A370004E2AE2 /* 圣梦_面部_问题分析_文字背景_15.png */; };
 		FCB4261E1A52A370004E2AE2 /* Thumbs.db in Resources */ = {isa = PBXBuildFile; fileRef = FCB425F81A52A370004E2AE2 /* Thumbs.db */; };
 		FCB4261F1A52A370004E2AE2 /* 圣梦_肤色选择_效果.jpg in Resources */ = {isa = PBXBuildFile; fileRef = FCB425F91A52A370004E2AE2 /* 圣梦_肤色选择_效果.jpg */; };
-		FCB426201A52A370004E2AE2 /* 圣梦_面部_49.jpg in Resources */ = {isa = PBXBuildFile; fileRef = FCB425FA1A52A370004E2AE2 /* 圣梦_面部_49.jpg */; };
 		FCB426211A52A370004E2AE2 /* 圣梦_面部_下一步_63.jpg in Resources */ = {isa = PBXBuildFile; fileRef = FCB425FB1A52A370004E2AE2 /* 圣梦_面部_下一步_63.jpg */; };
 		FCB426221A52A370004E2AE2 /* Thumbs.db in Resources */ = {isa = PBXBuildFile; fileRef = FCB425FD1A52A370004E2AE2 /* Thumbs.db */; };
 		FCB426231A52A370004E2AE2 /* 圣梦_面部_肤色色块_10.jpg in Resources */ = {isa = PBXBuildFile; fileRef = FCB425FE1A52A370004E2AE2 /* 圣梦_面部_肤色色块_10.jpg */; };
@@ -1396,7 +1395,6 @@
 		FCB425F61A52A370004E2AE2 /* 圣梦_面部_问题分析_文字背景_15.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "圣梦_面部_问题分析_文字背景_15.png"; sourceTree = "<group>"; };
 		FCB425F81A52A370004E2AE2 /* Thumbs.db */ = {isa = PBXFileReference; lastKnownFileType = file; path = Thumbs.db; sourceTree = "<group>"; };
 		FCB425F91A52A370004E2AE2 /* 圣梦_肤色选择_效果.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "圣梦_肤色选择_效果.jpg"; sourceTree = "<group>"; };
-		FCB425FA1A52A370004E2AE2 /* 圣梦_面部_49.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "圣梦_面部_49.jpg"; sourceTree = "<group>"; };
 		FCB425FB1A52A370004E2AE2 /* 圣梦_面部_下一步_63.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "圣梦_面部_下一步_63.jpg"; sourceTree = "<group>"; };
 		FCB425FD1A52A370004E2AE2 /* Thumbs.db */ = {isa = PBXFileReference; lastKnownFileType = file; path = Thumbs.db; sourceTree = "<group>"; };
 		FCB425FE1A52A370004E2AE2 /* 圣梦_面部_肤色色块_10.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "圣梦_面部_肤色色块_10.jpg"; sourceTree = "<group>"; };
@@ -2903,7 +2901,6 @@
 				FCB425F81A52A370004E2AE2 /* Thumbs.db */,
 				FCB425F91A52A370004E2AE2 /* 圣梦_肤色选择_效果.jpg */,
 				FCA92DA31A53EF4600AB6FE4 /* 圣梦_面部_箭头_44.png */,
-				FCB425FA1A52A370004E2AE2 /* 圣梦_面部_49.jpg */,
 				FCB425FB1A52A370004E2AE2 /* 圣梦_面部_下一步_63.jpg */,
 				FCA92DA51A53F0C000AB6FE4 /* 圣梦_面部_44.png */,
 				FCACAD5B1A58C39800F8C755 /* 圣梦_面部_对号_56.png */,
@@ -3086,7 +3083,6 @@
 				A27C21391A0A75EF005A8D8E /* 圣梦_07.png in Resources */,
 				CE86F8E12549086B0075DA24 /* 圣梦76.png in Resources */,
 				A27C212D1A0A75EF005A8D8E /* 圣梦_03_05.png in Resources */,
-				FCB426201A52A370004E2AE2 /* 圣梦_面部_49.jpg in Resources */,
 				A29311DA1A033CB200A25D77 /* ComparePotoController.xib in Resources */,
 				A27C213F1A0A75EF005A8D8E /* 圣梦_23.png in Resources */,
 				CBA0B63818F011D10069350E /* MWPhotoBrowser.bundle in Resources */,

@@ -1434,7 +1434,7 @@ FMDatabase *__infoDb = nil;
     [[InformationManage shardSingleton] getDetailRecordWithID:ids returnList:&array];
     
     self.detailRecordArray = array;
-    [NSThread detachNewThreadSelector:@selector(getDetailImageFromArray:) toTarget:self withObject:array];
+//    [NSThread detachNewThreadSelector:@selector(getDetailImageFromArray:) toTarget:self withObject:array];
     
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         [self deleteDBWithVersion:bVersion];

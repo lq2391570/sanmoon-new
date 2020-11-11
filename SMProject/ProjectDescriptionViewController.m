@@ -785,10 +785,9 @@ FMDatabase *__db = nil;
 {
     NSMutableArray * array = [NSMutableArray  arrayWithCapacity:10];
     [[ProjectManage shardSingleton] getDetailRecordWithID:ids returnList:&array];
-    
     self.detailRecordArray = array;
     NSLog(@"the detail record array is %d",[array count]);
-    [NSThread detachNewThreadSelector:@selector(getDetailImageFromArray:) toTarget:self withObject:array];
+//    [NSThread detachNewThreadSelector:@selector(getDetailImageFromArray:) toTarget:self withObject:array];
     
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         [self deleteDBWithVersion:bVersion];
@@ -869,7 +868,7 @@ FMDatabase *__db = nil;
         }
     }
     
-    self.photos = [NSMutableArray array];
+    self.photos = [NSMutableArray arrayWithCapacity:0];
     self.detailImageArray = [NSMutableArray arrayWithCapacity:10];
     
     for (PImageInfo * imageInfo in resourceArray)
@@ -899,13 +898,17 @@ FMDatabase *__db = nil;
                 }
 
             }
-//            if ([self checkInternet])
-//            {
-//                NSLog(@"online file");
-//                path = [kWSPath stringByAppendingString:imageInfo.imgUrl];
-//                [self.detailImageArray addObject:fileName];
-//                [self.photos addObject:[MWPhoto photoWithURL:[NSURL URLWithString: path] withName:bVersion]];
-//            }
+            NSLog(@"self.photos = %@",self.photos);
+            
+
+        }else{
+            if ([self checkInternet])
+            {
+                NSLog(@"online file");
+                path = [kWSPath stringByAppendingString:imageInfo.imgUrl];
+                [self.detailImageArray addObject:fileName];
+                [self.photos addObject:[MWPhoto photoWithURL:[NSURL URLWithString: path] withName:bVersion]];
+            }
         }
     
     }
@@ -917,10 +920,12 @@ FMDatabase *__db = nil;
     }
     else
     {
-        [SGInfoAlert showInfo:@"本地无存储数据文件，请连接网络后重试！"
-                      bgColor:[[UIColor blackColor] CGColor]
-                       inView:self.view
-                     vertical:0.4];
+//        [SGInfoAlert showInfo:@"本地无存储数据文件，请连接网络后重试！"
+//                      bgColor:[[UIColor blackColor] CGColor]
+//                       inView:self.view
+//                     vertical:0.4];
+         [self getResourceByVersion:onLineID];
+        
     }
     
 }
