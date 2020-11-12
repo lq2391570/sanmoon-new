@@ -2670,7 +2670,9 @@ NSLog(@"self.data_updata==%@",self.data_updata);
         case 12:
         {
             
-            ProjectDescriptionViewController *projectVC = [[ProjectDescriptionViewController alloc] initWithNibName:@"ProjectDescriptionViewController" bundle:nil];
+//            ProjectDescriptionViewController *projectVC = [[ProjectDescriptionViewController alloc] initWithNibName:@"ProjectDescriptionViewController" bundle:nil];
+//            [self.navigationController pushViewController:projectVC animated:YES];
+            ProjectDescriptionViewController *projectVC = [[ProjectDescriptionViewController alloc] init];
             [self.navigationController pushViewController:projectVC animated:YES];
             break;
             

@@ -3024,6 +3024,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CBA0B65E18F014950069350E /* ProjectDescriptionViewController.xib in Resources */,
 				A27C21591A0A75EF005A8D8E /* 圣梦_身体上标记_48.png in Resources */,
 				A27C21561A0A75EF005A8D8E /* 圣梦_身体上标记_33.png in Resources */,
 				FCB4262D1A52A370004E2AE2 /* 圣梦_面部_肤色色块_30.jpg in Resources */,
@@ -3378,7 +3379,6 @@
 				A26048A01A012F2900488724 /* icon_checked.png in Resources */,
 				CBAD7A6A192302F9002E1886 /* index_cx.png in Resources */,
 				FCB425E61A527F79004E2AE2 /* FaceProblemViewController.xib in Resources */,
-				CBA0B65E18F014950069350E /* ProjectDescriptionViewController.xib in Resources */,
 				A27C21501A0A75EF005A8D8E /* 圣梦_色块_47.jpg in Resources */,
 				A27C21431A0A75EF005A8D8E /* 圣梦_071.png in Resources */,
 				FCC787B71A393222003BA6F8 /* 圣梦_上传头像_03_03.jpg in Resources */,

@@ -789,7 +789,7 @@ FMDatabase *__db = nil;
     NSLog(@"the detail record array is %d",[array count]);
 //    [NSThread detachNewThreadSelector:@selector(getDetailImageFromArray:) toTarget:self withObject:array];
     
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+//    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         [self deleteDBWithVersion:bVersion];
         for (ProjectInfo * book in array)
         {
@@ -821,7 +821,7 @@ FMDatabase *__db = nil;
                 }
             }
         }
-    });
+//    });
     
 }
 

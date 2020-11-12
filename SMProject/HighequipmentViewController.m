@@ -839,7 +839,7 @@ static NSString *backstr = @"-1";//记录返回compid
     self.detailRecordArray = array;
 //    [NSThread detachNewThreadSelector:@selector(getDetailImageFromArray:) toTarget:self withObject:array];
     
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+//    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         for (HighInfo * book in array)
         {
             HImageInfo * imageInfo = [[HImageInfo alloc] init];
@@ -871,7 +871,7 @@ static NSString *backstr = @"-1";//记录返回compid
                 }
             }
         }
-    });
+//    });
     
 }
 

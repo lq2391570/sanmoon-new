@@ -66,7 +66,7 @@
 - (void)saveImage:(UIImage *)image withURL:(NSString *)url;
 - (void)saveImage:(UIImage *)image withURL:(NSString *)url withCoverName:(NSString *)name;
 - (NSDictionary *)getDetailRecordWithID:(NSString *)queryID;
-- (BOOL)insertBookInfo:(InformationInfo *)info;
+- (BOOL)insertBookInfo:(IImageInfo *)info;
 - (BOOL)isExistImageWithName:(NSString *)url withVersion:(NSString *)version withType:(int)type;
 - (NSArray *)getBookRecordByImageName:(NSString *)name;
 - (NSArray *)getBookRecordByVersion:(NSString *)version;
