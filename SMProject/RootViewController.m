@@ -583,7 +583,7 @@ NSLog(@"self.data_updata==%@",self.data_updata);
                         
                     }
                     
-                    [self insertPImageBookInfo:imgInfo];
+//                    [self insertPImageBookInfo:imgInfo];
                     [self createDirectoryPath:@"ephoto" withName:imgInfo.bookVersion];
                     if ([imgInfo.imgUrl rangeOfString:@"resources/images"].location != NSNotFound ) {
                         
@@ -713,7 +713,7 @@ NSLog(@"self.data_updata==%@",self.data_updata);
 //                });
 //            }
             
-                [self deleteBookInfoOfInformation:mationInfo.name];
+            [self deleteBookInfoOfInformation:mationInfo.name];
              NSArray *imageArray=[dict objectForKey:@"images"];
             for (NSDictionary *imageDic in imageArray) {
                 IImageInfo *imgInfo=[[IImageInfo alloc] init];
@@ -730,7 +730,7 @@ NSLog(@"self.data_updata==%@",self.data_updata);
                     imgInfo.endY=[[linkDic objectForKey:@"endY"] stringValue];
                     [self insertBookInfo2:imgInfo];
                 }
-                [self insertBookInfo2:imgInfo];
+//                [self insertBookInfo2:imgInfo];
                 [self createDirectoryPath:@"ephoto" withName:imgInfo.bookVersion];
                 if ([imgInfo.imgUrl rangeOfString:@"resources/images"].location != NSNotFound ) {
                     
@@ -796,7 +796,7 @@ NSLog(@"self.data_updata==%@",self.data_updata);
                         imgInfo.endY=[[linkDic objectForKey:@"endY"] stringValue];
                         [self insertBookInfo:imgInfo];
                     }
-                    [self insertBookInfo:imgInfo];
+//                    [self insertBookInfo:imgInfo];
                     [self createDirectoryPath:@"ephoto" withName:imgInfo.bookVersion];
                     if ([imgInfo.imgUrl rangeOfString:@"resources/images"].location != NSNotFound ) {
                         
@@ -1732,6 +1732,7 @@ NSLog(@"self.data_updata==%@",self.data_updata);
 //获取数据库文件(Bbook)
 - (NSString *)getDBPathOfEBook
 {
+    
     NSString * docsDir = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex:0];
     NSString * dbPath = [docsDir stringByAppendingPathComponent:@"EBook"];
     NSLog(@"the path is %@",dbPath);

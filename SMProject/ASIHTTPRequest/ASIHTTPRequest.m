@@ -4738,7 +4738,10 @@ static NSOperationQueue *sharedQueue = nil;
 + (void)showNetworkActivityIndicator
 {
 #if TARGET_OS_IPHONE
-	[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+    });
+	
 #endif
 }
 
