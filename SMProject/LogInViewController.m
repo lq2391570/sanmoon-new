@@ -241,11 +241,10 @@
     [self.password resignFirstResponder];
     [self.UserNameTextField resignFirstResponder];
     
-    
     UIAlertView *alertView=[[UIAlertView alloc] initWithTitle:@"注册" message:@"请输入内容" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:@"取消", nil];
     alertView.alertViewStyle= UIAlertViewStyleLoginAndPasswordInput;
-   [alertView textFieldAtIndex:0].placeholder=@"设备名称";
-   [alertView textFieldAtIndex:1].placeholder=@"连锁机构代码";
+    [alertView textFieldAtIndex:0].placeholder=@"设备名称";
+    [alertView textFieldAtIndex:1].placeholder=@"连锁机构代码";
     [alertView textFieldAtIndex:1].secureTextEntry=NO;
     [alertView textFieldAtIndex:0].keyboardType=UIKeyboardTypeDefault;
     [alertView textFieldAtIndex:1].keyboardType=UIKeyboardTypeDefault;
@@ -254,8 +253,7 @@
     NSLog(@"%@===",self.ipadUDID);
     alertView.delegate=self;
     alertView.tag=1;
-        [alertView show];
-    
+    [alertView show];
     
 }
 //-(void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex{
@@ -270,11 +268,19 @@
 {
     NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
     NSLog(@"the name is %@",self.nameTextfield.text);
-    [prefs setObject:self.nameTextfield.text forKey:@"name"];
+//    [prefs setObject:self.nameTextfield.text forKey:@"name"];
     [prefs setObject:self.UserNameTextField.text forKey:@"username"];
     [prefs setObject:self.password.text forKey:@"userpwd"];
     [prefs synchronize];
 }
+//存储机构代码
+- (void)saveUsid:(NSString *)usid
+{
+    NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
+    [prefs setObject:usid forKey:@"name"];
+}
+
+
 - (void)timeOut
 {
     if (self.isdimiss==YES) {
@@ -309,14 +315,12 @@
     [self getStoreNum:^(NSArray *array) {
         NSDictionary *dic=[array objectAtIndex:0];
         NSDictionary *dict2=[dic objectForKey:@"data"];
-        
-       self.shopCode=[dict2 objectForKey:@"shopCode"];
-         self.ipadStatus=[dic objectForKey:@"status"];
+        self.shopCode=[dict2 objectForKey:@"shopCode"];
+        self.ipadStatus=[dic objectForKey:@"status"];
         self.myIpadName=[dict2 objectForKey:@"name"];
         NSLog(@"name=%@,self.shopCode=%@",name,self.shopCode);
         self.data_updata=[dict2 objectForKey:@"data_update"];
 
-    
 #pragma mark 修改
         //self.ipadStatus = [NSNumber numberWithInt:2];
     if ([self.ipadStatus isEqualToNumber:[NSNumber numberWithInteger:2]]) {
@@ -325,22 +329,37 @@
             NSLog(@"门店验证成功");
             NSLog(@"%@",self.ipadStatus);
             NSLog(@"%@",self.shopCode);
-            NSLog(@"%@",[self getGuestInfo:name withUsername:user withPwd:passWord]);
-            if ([[self getGuestInfo:name withUsername:user withPwd:passWord] isEqualToString:@"T"]) {
-                [self.delegate changeRootViewController];
-                [self saveStoresID];
-                
-                dispatch_time_t delayTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC));
-                dispatch_after(delayTime, dispatch_get_main_queue(), ^{
-                    [SVProgressHUD showSuccessWithStatus:@"登陆成功"];
-                });
-                
-               
-               
-            }else{
-                [SVProgressHUD showInfoWithStatus:@"用户名或密码错误！"];
-              //  [SVProgressHUD dismiss];
-            }
+//            NSLog(@"%@",[self getGuestInfo:name withUsername:user withPwd:passWord withCompleteBlock:^(NSString *jgCodeStr) {
+//                <#code#>
+//            }]);
+            [self getGuestInfo:name withUsername:user withPwd:passWord withCompleteBlock:^(NSString *jgCodeStr) {
+                if (!EMPTYSTR(jgCodeStr)) {
+                    NSLog(@"jgCodeStr=%@",jgCodeStr);
+                    [self.delegate changeRootViewController];
+                    [self saveStoresID];
+                    [self saveUsid:jgCodeStr];
+                    
+                    dispatch_time_t delayTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC));
+                    dispatch_after(delayTime, dispatch_get_main_queue(), ^{
+                        [SVProgressHUD showSuccessWithStatus:@"登陆成功"];
+                    });
+                }else{
+                     [SVProgressHUD showInfoWithStatus:@"用户名或密码错误！"];
+                }
+            }];
+            
+//            if ([[self getGuestInfo:name withUsername:user withPwd:passWord] isEqualToString:@"T"]) {
+//                [self.delegate changeRootViewController];
+//                [self saveStoresID];
+//
+//                dispatch_time_t delayTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC));
+//                dispatch_after(delayTime, dispatch_get_main_queue(), ^{
+//                    [SVProgressHUD showSuccessWithStatus:@"登陆成功"];
+//                });
+//            }else{
+//                [SVProgressHUD showInfoWithStatus:@"用户名或密码错误！"];
+//              //  [SVProgressHUD dismiss];
+//            }
 
         }else{
             UIAlertView *alert=[[UIAlertView alloc] initWithTitle:@"提示" message:@"该设备未在此门店下注册" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
@@ -395,26 +414,35 @@
    //  [ProgressHUD showSuccess:@"登陆失败！"];
    // [SVProgressHUD dismiss];
 }
-- (NSString *)getGuestInfo:(NSString *)no withUsername:(NSString *)username withPwd:(NSString *)pwd
+- (void)getGuestInfo:(NSString *)no withUsername:(NSString *)username withPwd:(NSString *)pwd withCompleteBlock:(void (^) (NSString *jgCodeStr))complete
 {
-    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@GetData.asmx/GetMembert",RIP]];
-    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:url cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:10.0f];
-    [request setHTTPMethod:@"POST"];
-    NSString *requestdata = [NSString stringWithFormat:@"usid=%@&umid=%@&pw=%@&username=sanmoon&userpass=sm147369",no,username,pwd];
-    NSData *data = [requestdata dataUsingEncoding:NSUTF8StringEncoding];
-    NSLog(@"the data is %@",data);
-    [request setHTTPBody:data];
-    NSData *received = [NSURLConnection sendSynchronousRequest:request returningResponse:nil error:nil];
     
-    GDataXMLDocument *doc = [[GDataXMLDocument alloc] initWithData:received options:0 error:nil];
-    GDataXMLElement *rootElement = [doc rootElement];
+//    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@GetData.asmx/GetMembert",RIP]];
+//    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:url cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:10.0f];
+//    [request setHTTPMethod:@"POST"];
+//    NSString *requestdata = [NSString stringWithFormat:@"usid=%@&umid=%@&pw=%@&username=sanmoon&userpass=sm147369",no,username,pwd];
+//    NSData *data = [requestdata dataUsingEncoding:NSUTF8StringEncoding];
+//    NSLog(@"the data is %@",data);
+//    [request setHTTPBody:data];
+//    NSData *received = [NSURLConnection sendSynchronousRequest:request returningResponse:nil error:nil];
+//
+//    GDataXMLDocument *doc = [[GDataXMLDocument alloc] initWithData:received options:0 error:nil];
+//    GDataXMLElement *rootElement = [doc rootElement];
+//
+//    NSLog(@"this is login value %@",[rootElement stringValue]);
+//    NSString *str=[rootElement stringValue];
+//    NSLog(@"%@",rootElement);
+    //    return str;
+    [HttpEngine requestGETWithReqStr:GetMembert withComplete:^(NSDictionary *responseObj) {
+        NSLog(@"GetMembertRespon = %@",responseObj);
+        BasicsRootClass *bassClass = [[BasicsRootClass alloc] initWithDictionary:responseObj];
+        if (complete != nil) {
+            complete(bassClass.data);
+        }
+        
+    } dic:@{@"user":username,@"pw":pwd,@"username":@"sanmoon",@"userpass":@"sm147369"}];
     
-    NSLog(@"this is login value %@",[rootElement stringValue]);
-    NSString *str=[rootElement stringValue];
-    
-    NSLog(@"%@",rootElement);
-    
-    
+
     
 //    
 //    NSData * jsondata = [[rootElement stringValue] dataUsingEncoding:NSUTF8StringEncoding];
@@ -439,9 +467,11 @@
 //        
 ////    }
     
-    return str;
+//    return str;
     
 }
+
+
 - (NSString *)getGuestInfoWithPhone:(NSString *)no withUsername:(NSString *)username withPwd:(NSString *)pwd
 {
     NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@GetData.asmx/GetGuestListExpphone",RIP]];

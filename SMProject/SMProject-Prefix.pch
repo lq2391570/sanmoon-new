@@ -17,31 +17,33 @@
     #import "ProgressHUD.h"
 #import <QuartzCore/QuartzCore.h>
 
+#import "HttpEngine.h"
+
+
 #define Screen_height   [[UIScreen mainScreen] bounds].size.height
 #define Screen_width    [[UIScreen mainScreen] bounds].size.width
 #define Screen_bounds   [[UIScreen mainScreen] bounds]
 #define coordinate_width(num) ((num)/320.0)*Screen_width
 #define coordinate_height(num) ((num)/568.0)*Screen_height
-
+#define WEAKSELF __weak typeof(self) weakself = self;
+#define EMPTYSTR(str) (str==nil||[str isEqualToString:@""])
 //#define LocationIp @"http://192.168.199.129:8080/Sanmoon/"
 //#define LocationIp @"http://192.168.199.188:8090/Sanmoon/"
-//#define LocationIp @"http://192.168.199.190:8090/CsSanmoon/"
+//#define LocationIp @"http://192.168.20.78:8080/CsSanmoon/"
 
 
 //测试版//////////////////////////////
 #define ReLocation @"https://ipad.sanmoon.net/version/cssanmoon/CSSMVersion.html"
 #define LocationIp @"http://ipad.sanmoon.net:9999/CsSanmoon/"
-#define RIP @"http://113.140.20.6/csgetdata/"
+//#define RIP @"http://113.140.20.6/csgetdata/"
+#define RIP @"http://113.140.20.4:8080/ipaddata/"
 #define ReLocationPlist @"itms-services://?action=download-manifest&url=https://ipad.sanmoon.net/version/cssanmoon/CSSanmoon.plist";
-
 
 //正式版////////////////////////////
 //#define ReLocation @"https://ipad.sanmoon.net/version/sanmoon/SMVersion.html"
 //#define LocationIp @"http://ipad.sanmoon.net:9999/Sanmoon/"
 //#define RIP @"http://113.140.20.6/getdata/"
 //#define ReLocationPlist @"itms-services://?action=download-manifest&url=https://ipad.sanmoon.net/version/sanmoon/Sanmoon.plist";
-
-
 
 #define MAINURL @"http://124.115.170.165:8080/Sanmoon1.0/"
 #define GETURL @"http://124.115.170.165:8080/Sanmoon1.0/findImagesLinkToIpad?comp.imagesIds="

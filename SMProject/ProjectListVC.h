@@ -20,7 +20,7 @@
 
 @property (strong, nonatomic) IBOutlet UIButton *returnBtn;
 //会员卡号
-@property (nonatomic,strong) NSString *cid;
+@property (nonatomic,strong) NSString *gid;
 //会员姓名
 @property (nonatomic,strong) NSString *uname;
 //cell是否打开的indexPath

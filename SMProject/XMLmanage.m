@@ -454,260 +454,312 @@
     return [rootElement stringValue];
 }
 
-- (NSArray *)getGuestInfoWithPhone:(NSString *)no withUsername:(NSString *)username withPwd:(NSString *)pwd
+- (void)getGuestInfoWithPhone:(NSString *)no withUsername:(NSString *)username withPwd:(NSString *)pwd withCompleteBlock:(void (^) (GusetListRootClass *bassClass))completeBlock
 {
   //  NSURL *url = [NSURL URLWithString:QueryID];
-    NSURL *url = [NSURL URLWithString:QueryPhoneNum];
-    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:url cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:10.0f];
-    [request setHTTPMethod:@"POST"];
-    NSString *requestdata = [NSString stringWithFormat:@"gexpphone=%@&username=%@&userpass=%@",no,username,pwd];
-    NSData *data = [requestdata dataUsingEncoding:NSUTF8StringEncoding];
-    NSLog(@"the data is %@",data);
-    [request setHTTPBody:data];
-    NSData *received = [NSURLConnection sendSynchronousRequest:request returningResponse:nil error:nil];
+//    NSURL *url = [NSURL URLWithString:QueryPhoneNum];
+//    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:url cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:10.0f];
+//    [request setHTTPMethod:@"POST"];
+//    NSString *requestdata = [NSString stringWithFormat:@"gexpphone=%@&username=%@&userpass=%@",no,username,pwd];
+//    NSData *data = [requestdata dataUsingEncoding:NSUTF8StringEncoding];
+//    NSLog(@"the data is %@",data);
+//    [request setHTTPBody:data];
+//    NSData *received = [NSURLConnection sendSynchronousRequest:request returningResponse:nil error:nil];
+//
+//    GDataXMLDocument *doc = [[GDataXMLDocument alloc] initWithData:received options:0 error:nil];
+//    GDataXMLElement *rootElement = [doc rootElement];
+//
+//    NSLog(@"this is login value %@",[rootElement stringValue]);
+//
+//
+//    NSData * jsondata = [[rootElement stringValue] dataUsingEncoding:NSUTF8StringEncoding];
+//    NSLog(@"jsondata is %@",requestdata);
+//
+//    NSError *error = nil;
+//    id jsonDict = [NSJSONSerialization JSONObjectWithData:jsondata options:NSJSONReadingMutableContainers error:&error];
+//    NSString * deposit;
+//
+//    NSLog(@"jsonDict=%@",jsonDict);
+//
+//    NSMutableArray * array = [NSMutableArray arrayWithCapacity:0];
+//
+//
+//    for (NSDictionary *dic in jsonDict) {
+//        CustomersQuery *info = [[CustomersQuery alloc] init];
+//
+//        info.cardstate = [dic objectForKey:@"cardstate"];
+//        info.cid = [dic objectForKey:@"cid"];
+//        info.gsname= [dic objectForKey:@"gname"];
+//        info.usid = [dic objectForKey:@"usid"];
+//                    [array addObject:info];
+//
+//    }
+//
+//    return array;
     
-    GDataXMLDocument *doc = [[GDataXMLDocument alloc] initWithData:received options:0 error:nil];
-    GDataXMLElement *rootElement = [doc rootElement];
-    
-    NSLog(@"this is login value %@",[rootElement stringValue]);
-    
-
-    NSData * jsondata = [[rootElement stringValue] dataUsingEncoding:NSUTF8StringEncoding];
-    NSLog(@"jsondata is %@",requestdata);
-    
-    NSError *error = nil;
-    id jsonDict = [NSJSONSerialization JSONObjectWithData:jsondata options:NSJSONReadingMutableContainers error:&error];
-    NSString * deposit;
-
-    NSLog(@"jsonDict=%@",jsonDict);
-    
-    NSMutableArray * array = [NSMutableArray arrayWithCapacity:0];
-   
-    
-    for (NSDictionary *dic in jsonDict) {
-        CustomersQuery *info = [[CustomersQuery alloc] init];
-        
-        info.cardstate = [dic objectForKey:@"cardstate"];
-        info.cid = [dic objectForKey:@"cid"];
-        info.gsname= [dic objectForKey:@"gname"];
-        info.usid = [dic objectForKey:@"usid"];
-                    [array addObject:info];
-        
-    }
-    
-    return array;
-    
-}
-
-- (NSArray *)getGuestInfo:(NSString *)no withUsername:(NSString *)username withPwd:(NSString *)pwd
-{
-    NSURL *url = [NSURL URLWithString:QueryID];
-    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:url cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:10.0f];
-    [request setHTTPMethod:@"POST"];
-    NSString *requestdata = [NSString stringWithFormat:@"cid=%@&username=%@&userpass=%@",no,username,pwd];
-    NSData *data = [requestdata dataUsingEncoding:NSUTF8StringEncoding];
-    NSLog(@"the data is %@",data);
-    [request setHTTPBody:data];
-    NSData *received = [NSURLConnection sendSynchronousRequest:request returningResponse:nil error:nil];
-    
-    GDataXMLDocument *doc = [[GDataXMLDocument alloc] initWithData:received options:0 error:nil];
-    GDataXMLElement *rootElement = [doc rootElement];
-    
-    NSLog(@"this is login value %@",[rootElement stringValue]);
-    
-    NSData * jsondata = [[rootElement stringValue] dataUsingEncoding:NSUTF8StringEncoding];
-    NSLog(@"jsondata is %@",requestdata);
-    
-    NSError *error = nil;
-    id jsonDict = [NSJSONSerialization JSONObjectWithData:jsondata options:NSJSONReadingMutableContainers error:&error];
-    NSString * deposit;
-    
-    NSLog(@"jsonDict=%@",jsonDict);
-    
-    NSMutableArray * array = [NSMutableArray arrayWithCapacity:0];
-    
-    for (NSDictionary *dic in jsonDict) {
-        CustomersQuery *info = [[CustomersQuery alloc] init];
-        
-        info.cardstate = [dic objectForKey:@"cardstate"];
-        info.cid = [dic objectForKey:@"cid"];
-        info.gsname= [dic objectForKey:@"gname"];
-        info.usid = [dic objectForKey:@"usid"];
-        [array addObject:info];
-        
-    }
-    
-    return array;
-    
-}
-
-- (NSMutableArray *)getGuestInfoWithName:(NSString *)name withUsername:(NSString *)username withPwd:(NSString *)pwd
-{
-    NSURL *url = [NSURL URLWithString:QueryName];
-    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:url cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:10.0f];
-    [request setHTTPMethod:@"POST"];
-    NSString *requestdata = [NSString stringWithFormat:@"gname=%@&username=%@&userpass=%@",name,username,pwd];
-    NSData *data = [requestdata dataUsingEncoding:NSUTF8StringEncoding];
-    NSLog(@"the data is %@",data);
-    [request setHTTPBody:data];
-    NSData *received = [NSURLConnection sendSynchronousRequest:request returningResponse:nil error:nil];
-    
-    GDataXMLDocument *doc = [[GDataXMLDocument alloc] initWithData:received options:0 error:nil];
-    GDataXMLElement *rootElement = [doc rootElement];
-    
-    
-    NSData * jsondata = [[rootElement stringValue] dataUsingEncoding:NSUTF8StringEncoding];
-    NSLog(@"jsondata is %@",requestdata);
-    
-    NSError *error = nil;
-    id jsonDict = [NSJSONSerialization JSONObjectWithData:jsondata options:NSJSONReadingMutableContainers error:&error];
-    NSLog(@"===%@",jsonDict);
-    NSString * deposit;
-    NSMutableArray * array = [NSMutableArray arrayWithCapacity:0];
-    NSUserDefaults *users=[NSUserDefaults standardUserDefaults];
-    NSString *usid=[users objectForKey:@"name"];
-    for (NSDictionary *dic in jsonDict) {
-        CustomersQuery *info = [[CustomersQuery alloc] init];
-        
-        info.cardstate = [dic objectForKey:@"cardstate"];
-        info.cid = [dic objectForKey:@"cid"];
-        info.gsname= [dic objectForKey:@"gname"];
-        info.usid = [dic objectForKey:@"usid"];
-        if ([info.usid isEqualToString:usid]) {
-             [array addObject:info];
+    [HttpEngine requestGETWithReqStr:GetGuestListExpphone withComplete:^(NSDictionary *responseObj) {
+        NSLog(@"guestWithPhoneRes = %@",responseObj);
+        GusetListRootClass *bassClass = [[GusetListRootClass alloc] initWithDictionary:responseObj];
+        if (completeBlock != nil) {
+            completeBlock(bassClass);
         }
-       
-
-    }
-    return array;
+    } dic:@{@"pexpphone":no,@"username":username,@"userpass":pwd}];
+    
+    
+    
 }
+
+- (void)getGuestInfo:(NSString *)no withUsername:(NSString *)username withPwd:(NSString *)pwd withCompleteBlock:(void (^) (GusetListRootClass *bassClass))completeBlock
+{
+//    NSURL *url = [NSURL URLWithString:QueryID];
+//    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:url cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:10.0f];
+//    [request setHTTPMethod:@"POST"];
+//    NSString *requestdata = [NSString stringWithFormat:@"cid=%@&username=%@&userpass=%@",no,username,pwd];
+//    NSData *data = [requestdata dataUsingEncoding:NSUTF8StringEncoding];
+//    NSLog(@"the data is %@",data);
+//    [request setHTTPBody:data];
+//    NSData *received = [NSURLConnection sendSynchronousRequest:request returningResponse:nil error:nil];
+//
+//    GDataXMLDocument *doc = [[GDataXMLDocument alloc] initWithData:received options:0 error:nil];
+//    GDataXMLElement *rootElement = [doc rootElement];
+//
+//    NSLog(@"this is login value %@",[rootElement stringValue]);
+//
+//    NSData * jsondata = [[rootElement stringValue] dataUsingEncoding:NSUTF8StringEncoding];
+//    NSLog(@"jsondata is %@",requestdata);
+//
+//    NSError *error = nil;
+//    id jsonDict = [NSJSONSerialization JSONObjectWithData:jsondata options:NSJSONReadingMutableContainers error:&error];
+//    NSString * deposit;
+//
+//    NSLog(@"jsonDict=%@",jsonDict);
+//
+//    NSMutableArray * array = [NSMutableArray arrayWithCapacity:0];
+//
+//    for (NSDictionary *dic in jsonDict) {
+//        CustomersQuery *info = [[CustomersQuery alloc] init];
+//
+//        info.cardstate = [dic objectForKey:@"cardstate"];
+//        info.cid = [dic objectForKey:@"cid"];
+//        info.gsname= [dic objectForKey:@"gname"];
+//        info.usid = [dic objectForKey:@"usid"];
+//        [array addObject:info];
+//
+//    }
+//
+//    return array;
+    
+    [HttpEngine requestGETWithReqStr:GetGuestListGid withComplete:^(NSDictionary *responseObj) {
+        NSLog(@"GuestInfoRes=%@",responseObj);
+        GusetListRootClass *bassClass = [[GusetListRootClass alloc] initWithDictionary:responseObj];
+        if (completeBlock != nil) {
+            completeBlock(bassClass);
+        }
+    } dic:@{@"pgid":no,@"username":username,@"userpass":pwd}];
+    
+}
+
+- (void)getGuestInfoWithName:(NSString *)name withUsername:(NSString *)username withPwd:(NSString *)pwd withCompleteBlock:(void (^) (GusetListRootClass *bassClass))completeBlock
+{
+//    NSURL *url = [NSURL URLWithString:QueryName];
+//    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:url cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:10.0f];
+//    [request setHTTPMethod:@"POST"];
+//    NSString *requestdata = [NSString stringWithFormat:@"gname=%@&username=%@&userpass=%@",name,username,pwd];
+//    NSData *data = [requestdata dataUsingEncoding:NSUTF8StringEncoding];
+//    NSLog(@"the data is %@",data);
+//    [request setHTTPBody:data];
+//    NSData *received = [NSURLConnection sendSynchronousRequest:request returningResponse:nil error:nil];
+//
+//    GDataXMLDocument *doc = [[GDataXMLDocument alloc] initWithData:received options:0 error:nil];
+//    GDataXMLElement *rootElement = [doc rootElement];
+//
+//
+//    NSData * jsondata = [[rootElement stringValue] dataUsingEncoding:NSUTF8StringEncoding];
+//    NSLog(@"jsondata is %@",requestdata);
+//
+//    NSError *error = nil;
+//    id jsonDict = [NSJSONSerialization JSONObjectWithData:jsondata options:NSJSONReadingMutableContainers error:&error];
+//    NSLog(@"===%@",jsonDict);
+//    NSString * deposit;
+//    NSMutableArray * array = [NSMutableArray arrayWithCapacity:0];
+//    NSUserDefaults *users=[NSUserDefaults standardUserDefaults];
+//    NSString *usid=[users objectForKey:@"name"];
+//    for (NSDictionary *dic in jsonDict) {
+//        CustomersQuery *info = [[CustomersQuery alloc] init];
+//        info.cardstate = [dic objectForKey:@"cardstate"];
+//        info.cid = [dic objectForKey:@"cid"];
+//        info.gsname= [dic objectForKey:@"gname"];
+//        info.usid = [dic objectForKey:@"usid"];
+//        if ([info.usid isEqualToString:usid]) {
+//             [array addObject:info];
+//        }
+//    }
+    
+    [HttpEngine requestGETWithReqStr:GetGuestListName withComplete:^(NSDictionary *responseObj) {
+        NSLog(@"GetGuestListNameResponseObj=%@",responseObj);
+        GusetListRootClass *bassClass = [[GusetListRootClass alloc] initWithDictionary:responseObj];
+        if (completeBlock != nil) {
+            completeBlock(bassClass);
+        }
+    } dic:@{@"pgname":name,@"username":username,@"userpass":pwd}];
+    
+    
+    
+//    return @[];
+}
+
+
+
+
 //精确查询接口（卡号）
-- (NSMutableArray *)getGuestInfoWithName2:(NSString *)name withUsername:(NSString *)username withPwd:(NSString *)pwd cardNum:(NSString *)cardNum
+- (void)getGuestInfoWithName2:(NSString *)name withUsername:(NSString *)username withPwd:(NSString *)pwd cardNum:(NSString *)cardNum withCompleteBlock:(void (^) (GusetListRootClass *bassClass))completeBlock
 {
-    NSURL *url = [NSURL URLWithString:QueryName];
-    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:url cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:10.0f];
-    [request setHTTPMethod:@"POST"];
-    NSString *requestdata = [NSString stringWithFormat:@"gname=%@&username=%@&userpass=%@",name,username,pwd];
-    NSData *data = [requestdata dataUsingEncoding:NSUTF8StringEncoding];
-    NSLog(@"the data is %@",data);
-    [request setHTTPBody:data];
-    NSData *received = [NSURLConnection sendSynchronousRequest:request returningResponse:nil error:nil];
-    
-    GDataXMLDocument *doc = [[GDataXMLDocument alloc] initWithData:received options:0 error:nil];
-    GDataXMLElement *rootElement = [doc rootElement];
-    
-    
-    NSData * jsondata = [[rootElement stringValue] dataUsingEncoding:NSUTF8StringEncoding];
-    NSLog(@"namejsondata is %@",requestdata);
-    
-    NSError *error = nil;
-    id jsonDict = [NSJSONSerialization JSONObjectWithData:jsondata options:NSJSONReadingMutableContainers error:&error];
-    NSLog(@"===%@",jsonDict);
-    NSString * deposit;
-    NSMutableArray * array = [NSMutableArray arrayWithCapacity:0];
-    NSUserDefaults *users=[NSUserDefaults standardUserDefaults];
-    NSString *usid=[users objectForKey:@"name"];
-    for (NSDictionary *dic in jsonDict) {
-        CustomersQuery *info = [[CustomersQuery alloc] init];
-        
-        info.cardstate = [dic objectForKey:@"cardstate"];
-        info.cid = [dic objectForKey:@"cid"];
-        info.gsname= [dic objectForKey:@"gname"];
-        info.usid = [dic objectForKey:@"usid"];
-        info.gexpphone = [dic objectForKey:@"gexpphone"];
-        if ([info.cid isEqualToString:cardNum]) {
-            [array addObject:info];
+//    NSURL *url = [NSURL URLWithString:QueryName];
+//    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:url cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:10.0f];
+//    [request setHTTPMethod:@"POST"];
+//    NSString *requestdata = [NSString stringWithFormat:@"gname=%@&username=%@&userpass=%@",name,username,pwd];
+//    NSData *data = [requestdata dataUsingEncoding:NSUTF8StringEncoding];
+//    NSLog(@"the data is %@",data);
+//    [request setHTTPBody:data];
+//    NSData *received = [NSURLConnection sendSynchronousRequest:request returningResponse:nil error:nil];
+//
+//    GDataXMLDocument *doc = [[GDataXMLDocument alloc] initWithData:received options:0 error:nil];
+//    GDataXMLElement *rootElement = [doc rootElement];
+//
+//
+//    NSData * jsondata = [[rootElement stringValue] dataUsingEncoding:NSUTF8StringEncoding];
+//    NSLog(@"namejsondata is %@",requestdata);
+//
+//    NSError *error = nil;
+//    id jsonDict = [NSJSONSerialization JSONObjectWithData:jsondata options:NSJSONReadingMutableContainers error:&error];
+//    NSLog(@"===%@",jsonDict);
+//    NSString * deposit;
+//    NSMutableArray * array = [NSMutableArray arrayWithCapacity:0];
+//    NSUserDefaults *users=[NSUserDefaults standardUserDefaults];
+//    NSString *usid=[users objectForKey:@"name"];
+//    for (NSDictionary *dic in jsonDict) {
+//        CustomersQuery *info = [[CustomersQuery alloc] init];
+//
+//        info.cardstate = [dic objectForKey:@"cardstate"];
+//        info.cid = [dic objectForKey:@"cid"];
+//        info.gsname= [dic objectForKey:@"gname"];
+//        info.usid = [dic objectForKey:@"usid"];
+//        info.gexpphone = [dic objectForKey:@"gexpphone"];
+//        if ([info.cid isEqualToString:cardNum]) {
+//            [array addObject:info];
+//        }
+//
+//    }
+//    return array;
+    [HttpEngine requestGETWithReqStr:GetGuestListName withComplete:^(NSDictionary *responseObj) {
+        GusetListRootClass *bassClass = [[GusetListRootClass alloc] initWithDictionary:responseObj];
+        if (completeBlock != nil) {
+            completeBlock(bassClass);
         }
-        
-    }
-    return array;
+    } dic:@{@"pgname":name,@"username":username,@"userpass":pwd}];
 }
 
 //精确查询接口(手机号)
-- (NSMutableArray *)getGuestInfoWithNamePhone2:(NSString *)name withUsername:(NSString *)username withPwd:(NSString *)pwd cardNum:(NSString *)cardNum
+- (void)getGuestInfoWithNamePhone2:(NSString *)name withUsername:(NSString *)username withPwd:(NSString *)pwd cardNum:(NSString *)cardNum withCompleteBlock:(void (^) (GusetListRootClass *bassClass))completeBlock
 {
-    NSURL *url = [NSURL URLWithString:QueryName];
-    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:url cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:10.0f];
-    [request setHTTPMethod:@"POST"];
-    NSString *requestdata = [NSString stringWithFormat:@"gname=%@&username=%@&userpass=%@",name,username,pwd];
-    NSData *data = [requestdata dataUsingEncoding:NSUTF8StringEncoding];
-    NSLog(@"the data is %@",data);
-    [request setHTTPBody:data];
-    NSData *received = [NSURLConnection sendSynchronousRequest:request returningResponse:nil error:nil];
-    
-    GDataXMLDocument *doc = [[GDataXMLDocument alloc] initWithData:received options:0 error:nil];
-    GDataXMLElement *rootElement = [doc rootElement];
-    
-    
-    NSData * jsondata = [[rootElement stringValue] dataUsingEncoding:NSUTF8StringEncoding];
-    NSLog(@"namejsondata is %@",requestdata);
-    
-    NSError *error = nil;
-    id jsonDict = [NSJSONSerialization JSONObjectWithData:jsondata options:NSJSONReadingMutableContainers error:&error];
-    NSLog(@"===%@",jsonDict);
-    NSString * deposit;
-    NSMutableArray * array = [NSMutableArray arrayWithCapacity:0];
-    NSUserDefaults *users=[NSUserDefaults standardUserDefaults];
-    NSString *usid=[users objectForKey:@"name"];
-    for (NSDictionary *dic in jsonDict) {
-        CustomersQuery *info = [[CustomersQuery alloc] init];
-        
-        info.cardstate = [dic objectForKey:@"cardstate"];
-        info.cid = [dic objectForKey:@"cid"];
-        info.gsname= [dic objectForKey:@"gname"];
-        info.usid = [dic objectForKey:@"usid"];
-        info.gexpphone = [dic objectForKey:@"gexpphone"];
-        if ([info.gexpphone isEqualToString:cardNum]) {
-            [array addObject:info];
+//    NSURL *url = [NSURL URLWithString:QueryName];
+//    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:url cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:10.0f];
+//    [request setHTTPMethod:@"POST"];
+//    NSString *requestdata = [NSString stringWithFormat:@"gname=%@&username=%@&userpass=%@",name,username,pwd];
+//    NSData *data = [requestdata dataUsingEncoding:NSUTF8StringEncoding];
+//    NSLog(@"the data is %@",data);
+//    [request setHTTPBody:data];
+//    NSData *received = [NSURLConnection sendSynchronousRequest:request returningResponse:nil error:nil];
+//
+//    GDataXMLDocument *doc = [[GDataXMLDocument alloc] initWithData:received options:0 error:nil];
+//    GDataXMLElement *rootElement = [doc rootElement];
+//
+//
+//    NSData * jsondata = [[rootElement stringValue] dataUsingEncoding:NSUTF8StringEncoding];
+//    NSLog(@"namejsondata is %@",requestdata);
+//
+//    NSError *error = nil;
+//    id jsonDict = [NSJSONSerialization JSONObjectWithData:jsondata options:NSJSONReadingMutableContainers error:&error];
+//    NSLog(@"===%@",jsonDict);
+//    NSString * deposit;
+//    NSMutableArray * array = [NSMutableArray arrayWithCapacity:0];
+//    NSUserDefaults *users=[NSUserDefaults standardUserDefaults];
+//    NSString *usid=[users objectForKey:@"name"];
+//    for (NSDictionary *dic in jsonDict) {
+//        CustomersQuery *info = [[CustomersQuery alloc] init];
+//
+//        info.cardstate = [dic objectForKey:@"cardstate"];
+//        info.cid = [dic objectForKey:@"cid"];
+//        info.gsname= [dic objectForKey:@"gname"];
+//        info.usid = [dic objectForKey:@"usid"];
+//        info.gexpphone = [dic objectForKey:@"gexpphone"];
+//        if ([info.gexpphone isEqualToString:cardNum]) {
+//            [array addObject:info];
+//        }
+//
+//    }
+//    return array;
+    [HttpEngine requestGETWithReqStr:GetGuestListName withComplete:^(NSDictionary *responseObj) {
+        GusetListRootClass *bassClass = [[GusetListRootClass alloc] initWithDictionary:responseObj];
+        if (completeBlock != nil) {
+            completeBlock(bassClass);
         }
-        
-    }
-    return array;
+    } dic:@{@"pgname":name,@"username":username,@"userpass":pwd}];
+    
+    
 }
 
 
 
 
-- (NSArray *)getGSNumber:(NSString *)no withUsername:(NSString *)username withPwd:(NSString *)pwd
+- (void)getGSNumber:(NSString *)no withUsername:(NSString *)username withPwd:(NSString *)pwd withCompleteBlock:(void (^) (GuestInfoRootClass *bassClass))completeBlock
 {
-    NSURL *url = [NSURL URLWithString:QueryNumber];
-    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:url cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:10.0f];
-    [request setHTTPMethod:@"POST"];
-    NSString *requestdata = [NSString stringWithFormat:@"cid=%@&username=%@&userpass=%@",no,username,pwd];
-    NSData *data = [requestdata dataUsingEncoding:NSUTF8StringEncoding];
-    NSLog(@"the data is %@",data);
-    [request setHTTPBody:data];
-    NSData *received = [NSURLConnection sendSynchronousRequest:request returningResponse:nil error:nil];
+//    NSURL *url = [NSURL URLWithString:QueryNumber];
+//    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:url cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:10.0f];
+//    [request setHTTPMethod:@"POST"];
+//    NSString *requestdata = [NSString stringWithFormat:@"cid=%@&username=%@&userpass=%@",no,username,pwd];
+//    NSData *data = [requestdata dataUsingEncoding:NSUTF8StringEncoding];
+//    NSLog(@"the data is %@",data);
+//    [request setHTTPBody:data];
+//    NSData *received = [NSURLConnection sendSynchronousRequest:request returningResponse:nil error:nil];
+//
+//    GDataXMLDocument *doc = [[GDataXMLDocument alloc] initWithData:received options:0 error:nil];
+//    GDataXMLElement *rootElement = [doc rootElement];
+//
+//    NSLog(@"this is login value %@",[rootElement stringValue]);
+//
+//    NSData * jsondata = [[rootElement stringValue] dataUsingEncoding:NSUTF8StringEncoding];
+//    NSLog(@"jsondata is %@",requestdata);
+//
+//    NSError *error = nil;
+//    id jsonDict = [NSJSONSerialization JSONObjectWithData:jsondata options:NSJSONReadingMutableContainers error:&error];
+//    NSLog(@"jsondict is %@",jsonDict);
+//
+//    NSMutableArray * array = [NSMutableArray arrayWithCapacity:1];
+//
+//    for (NSDictionary *dic in jsonDict) {
+//        CustomersInfo *info = [[CustomersInfo alloc] init];
+//        info.gid = [dic objectForKey:@"gid"];
+//        info.dabh = [dic objectForKey:@"dnbh"];
+//        info.jdsj = [dic objectForKey:@"jdsj"];
+//        info.gname = [dic objectForKey:@"gname"];
+//        info.gfancy = [dic objectForKey:@"gfancy"];
+//        info.lasttime = [dic objectForKey:@"lasttime"];
+//        info.sfgm = [dic objectForKey:@"sfgm"];
+//        info.grequest = [dic objectForKey:@"grequest"];
+//        [array addObject:info];
+//    }
+    [HttpEngine requestGETWithReqStr:GetGuestInfoGid withComplete:^(NSDictionary *responseObj) {
+        NSLog(@"guestInfo = %@",responseObj);
+        GuestInfoRootClass *bassClass = [[GuestInfoRootClass alloc] initWithDictionary:responseObj];
+        if (completeBlock != nil) {
+            completeBlock(bassClass);
+        }
+    } dic:@{@"pgid":no,@"username":username,@"userpass":pwd}];
     
-    GDataXMLDocument *doc = [[GDataXMLDocument alloc] initWithData:received options:0 error:nil];
-    GDataXMLElement *rootElement = [doc rootElement];
+
     
-    NSLog(@"this is login value %@",[rootElement stringValue]);
-    
-    NSData * jsondata = [[rootElement stringValue] dataUsingEncoding:NSUTF8StringEncoding];
-    NSLog(@"jsondata is %@",requestdata);
-    
-    NSError *error = nil;
-    id jsonDict = [NSJSONSerialization JSONObjectWithData:jsondata options:NSJSONReadingMutableContainers error:&error];
-    NSLog(@"jsondict is %@",jsonDict);
-    
-    NSMutableArray * array = [NSMutableArray arrayWithCapacity:1];
-    
-    for (NSDictionary *dic in jsonDict) {
-        CustomersInfo *info = [[CustomersInfo alloc] init];
-        
-        info.gid = [dic objectForKey:@"gid"];
-        info.dabh = [dic objectForKey:@"dnbh"];
-        info.jdsj = [dic objectForKey:@"jdsj"];
-        info.gname = [dic objectForKey:@"gname"];
-        info.gfancy = [dic objectForKey:@"gfancy"];
-        info.lasttime = [dic objectForKey:@"lasttime"];
-        info.sfgm = [dic objectForKey:@"sfgm"];
-        info.grequest = [dic objectForKey:@"grequest"];
-        [array addObject:info];
-        
-    }
-    return array;
+//    return array;
 }
 
 - (NSArray *)getService:(NSString *)no withUsername:(NSString *)username withPwd:(NSString *)pwd

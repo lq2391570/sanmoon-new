@@ -267,19 +267,19 @@ NSLog(@"self.data_updata==%@",self.data_updata);
    // [self.view addSubview:_progressView];
     _fileArray=[[NSMutableArray alloc] initWithCapacity:0];
     
-    UILabel *storeLabel=[[UILabel alloc] initWithFrame:CGRectMake(10, 750, 200, 17)];
+    UILabel *storeLabel=[[UILabel alloc] initWithFrame:CGRectMake(10, 750, 280, 17)];
     storeLabel.text=[NSString stringWithFormat:@"连锁机构代码：%@",self.storeName];
     
     storeLabel.textColor=[UIColor darkGrayColor];
   //  storeLabel.text=self.storeName;
     [self.view addSubview:storeLabel];
-    UILabel *namelabel=[[UILabel alloc] initWithFrame:CGRectMake(220, 750, 200, 17)];
+    UILabel *namelabel=[[UILabel alloc] initWithFrame:CGRectMake(300, 750, 200, 17)];
     namelabel.text=[NSString stringWithFormat:@"管理人员代码：%@",self.userName];
   //  namelabel.text=self.userName;
     namelabel.textColor=[UIColor darkGrayColor];
     
     [self.view addSubview:namelabel];
-    UILabel *ipadNamelabel=[[UILabel alloc] initWithFrame:CGRectMake(430, 750, 200, 17)];
+    UILabel *ipadNamelabel=[[UILabel alloc] initWithFrame:CGRectMake(510, 750, 200, 17)];
     ipadNamelabel.text=[NSString stringWithFormat:@"设备名称：%@",self.ipadName];
   //  ipadNamelabel.text=self.ipadName;
     NSLog(@"========%@",ipadNamelabel.text);
@@ -2189,7 +2189,7 @@ NSLog(@"self.data_updata==%@",self.data_updata);
         [SVProgressHUD showInfoWithStatus:@"请输入手机号或卡号"];
         return;
     }
-    if ([_cardTextField.text containsString:@"O"]) {
+    if ([_cardTextField.text containsString:@"G"]) {
         //卡号
         [self jingQueSearch];
     }else{
@@ -2269,6 +2269,7 @@ NSLog(@"self.data_updata==%@",self.data_updata);
 {
     NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
     NSString * uName = [prefs objectForKey:@"name"];
+    NSLog(@"storeId=%@",uName);
     return uName;
 }
 //精确查询
@@ -2277,31 +2278,39 @@ NSLog(@"self.data_updata==%@",self.data_updata);
     if ([self isConnectionAvailable] == NO ) {
         return;
     }
-    
-    NSMutableArray * array =[NSMutableArray arrayWithArray:[[XMLmanage shardSingleton] getGuestInfoWithName2:_nameTextField.text  withUsername:@"sanmoon" withPwd:@"sm147369" cardNum:_cardTextField.text]];
-    
-    if ([array count] == 0)
-    {
-        UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"" message:@"卡号或手机号与姓名不匹配" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
-        [alert show];
-        [_cardTextField resignFirstResponder];
-        [_nameTextField resignFirstResponder];
-//        if (queryFlag == 0)
-//        {
-//            _cardTextField.text=@"";
-//        }else{
+    [[XMLmanage shardSingleton] getGuestInfoWithNamePhone2:_nameTextField.text withUsername:@"sanmoon" withPwd:@"sm147369" cardNum:_cardTextField.text withCompleteBlock:^(GusetListRootClass *bassClass) {
+        NSMutableArray *array = [NSMutableArray arrayWithCapacity:0];
+        
+        for (GusetListData *listData in bassClass.data) {
+            if ([listData.gid isEqualToString:_cardTextField.text]) {
+                [array addObject:listData];
+            }
+        }
+        if ([array count] == 0)
+        {
+            UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"" message:@"卡号或手机号与姓名不匹配" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+            [alert show];
+            [_cardTextField resignFirstResponder];
+            [_nameTextField resignFirstResponder];
+            //        if (queryFlag == 0)
+            //        {
+            //            _cardTextField.text=@"";
+            //        }else{
             _cardTextField.text = @"";
-      //  }
+            //  }
+            [SVProgressHUD dismiss];
+            
+            return;
+        }
+        //CustomersQuery * customer  = [array objectAtIndex:0];
+        CustomerController * customervc  = [[CustomerController alloc] init];
+        customervc.array = array;
+        customervc.delegate=self;
+        [self.navigationController pushViewController:customervc animated:YES];
         [SVProgressHUD dismiss];
         
-        return;
-    }
-    //CustomersQuery * customer  = [array objectAtIndex:0];
-    CustomerController * customervc  = [[CustomerController alloc] init];
-    customervc.array = array;
-    customervc.delegate=self;
-    [self.navigationController pushViewController:customervc animated:YES];
-    [SVProgressHUD dismiss];
+    }];
+    
 }
 - (void)jingQueSearchWithPhone
 {
@@ -2309,44 +2318,48 @@ NSLog(@"self.data_updata==%@",self.data_updata);
         return;
     }
     
-    NSMutableArray * array =[NSMutableArray arrayWithArray:[[XMLmanage shardSingleton] getGuestInfoWithNamePhone2:_nameTextField.text  withUsername:@"sanmoon" withPwd:@"sm147369" cardNum:_cardTextField.text]];
+//    NSMutableArray * array =[NSMutableArray arrayWithArray:[[XMLmanage shardSingleton] getGuestInfoWithNamePhone2:_nameTextField.text  withUsername:@"sanmoon" withPwd:@"sm147369" cardNum:_cardTextField.text]];
     
-    
-    
-    
-    if ([array count] == 0)
-    {
-        UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"" message:@"卡号或手机号与姓名不匹配" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
-        [alert show];
-        [_cardTextField resignFirstResponder];
-        [_nameTextField resignFirstResponder];
-        //        if (queryFlag == 0)
-        //        {
-        //            _cardTextField.text=@"";
-        //        }else{
-        _cardTextField.text = @"";
-        //  }
-        [SVProgressHUD dismiss];
+    [[XMLmanage shardSingleton] getGuestInfoWithNamePhone2:_nameTextField.text withUsername:@"sanmoon" withPwd:@"sm147369" cardNum:_cardTextField.text withCompleteBlock:^(GusetListRootClass *bassClass) {
+        NSMutableArray *array = [NSMutableArray arrayWithCapacity:0];
         
-        return;
-    }
-    //CustomersQuery * customer  = [array objectAtIndex:0];
-    CustomerController * customervc  = [[CustomerController alloc] init];
-    customervc.array = array;
-    customervc.delegate=self;
-    [self.navigationController pushViewController:customervc animated:YES];
-    [SVProgressHUD dismiss];
+            for (GusetListData *listData in bassClass.data) {
+                if ([listData.gexpphone isEqualToString:_cardTextField.text]) {
+                    [array addObject:listData];
+                }
+            }
+            if ([array count] == 0)
+            {
+                UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"" message:@"卡号或手机号与姓名不匹配" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+                [alert show];
+                [_cardTextField resignFirstResponder];
+                [_nameTextField resignFirstResponder];
+                //        if (queryFlag == 0)
+                //        {
+                //            _cardTextField.text=@"";
+                //        }else{
+                _cardTextField.text = @"";
+                //  }
+                [SVProgressHUD dismiss];
+                
+                return;
+            }
+            //CustomersQuery * customer  = [array objectAtIndex:0];
+            CustomerController * customervc  = [[CustomerController alloc] init];
+            customervc.array = array;
+            customervc.delegate=self;
+            [self.navigationController pushViewController:customervc animated:YES];
+            [SVProgressHUD dismiss];
+        
+    }];
+    
+    
+    
 }
 
 #pragma mark 修改
 - (void)searchTask
 {
-    
-    // searcktextField.text = @"O0029000150";
-    //    CateViewController * cate = [[CateViewController alloc] init];
-    //    [self.navigationController pushViewController:cate animated:YES];
-    // searcktextField.text = @"O0029000150";
-   
     if ([self isConnectionAvailable]==NO) {
         return;
     }else{
@@ -2358,114 +2371,17 @@ NSLog(@"self.data_updata==%@",self.data_updata);
             return;
         }
         
-        
     if (queryFlag == 1) {
-        
-//        if ([searcktextField.text length]!=11) {
-//            [SVProgressHUD showInfoWithStatus:@"手机号号输入有误，请核对"];
-//            return;
-//        }
-        
-        
-        NSArray *array = [NSArray array];
-        if ([searcktextField.text containsString:@"O"]) {
-            array = [[XMLmanage shardSingleton] getGuestInfo:searcktextField.text withUsername:@"sanmoon" withPwd:@"sm147369"];
+        if ([searcktextField.text containsString:@"G"]) {
+            WEAKSELF
+            [[XMLmanage shardSingleton] getGuestInfo:searcktextField.text withUsername:@"sanmoon" withPwd:@"sm147369" withCompleteBlock:^(GusetListRootClass *bassClass) {
+                [weakself searchWithPhoneOrGuestId:bassClass.data];
+            }];
         }else{
-            
-             array = [[XMLmanage shardSingleton] getGuestInfoWithPhone:searcktextField.text withUsername:@"sanmoon" withPwd:@"sm147369"];
-        }
-        
-        
-      
-        NSLog(@"array = %@",array);
-        
-        if ([array count] == 0) {
-            UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"" message:@"该顾客还不是会员，没有信息" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
-            [alert show];
-            searcktextField.text = @"";
-            [SVProgressHUD dismiss];
-
-            return;
-        }else{
-            //如果存在补卡状态则过滤掉2020.7.2////////////////
-            NSMutableArray *tempArray = [NSMutableArray arrayWithCapacity:0];
-            for (int i = 0; i< array.count; i++) {
-                CustomersQuery * customer = [array objectAtIndex:i];
-                if ([customer.cardstate isEqualToString:@"1"] || [customer.cardstate isEqualToString:@"9"]) {
-                    [tempArray addObject:customer];
-                }
-            }
-            if (tempArray.count == 0) {
-                [SVProgressHUD showInfoWithStatus:@"此卡状态异常"];
-            }else{
-                //先查询正常卡
-                for (CustomersQuery * customer in tempArray) {
-                    NSString * uid = [self getStoresID];
-                    NSString * cardState = customer.cardstate;
-                    if ([customer.usid isEqualToString:uid] == NO) {
-                        UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"" message:@"不是该门店的客户，禁止查询" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
-                        [alert show];
-                        if (queryFlag == 0) {
-                            searcktextField.text=@"";
-                        }else{
-                            searcktextField.text = @"";
-                        }
-                        [SVProgressHUD dismiss];
-                        break;
-                    }
-                    
-                    if ([customer.cardstate isEqualToString:@"1"]) {
-                        
-                        NSLog(@"the uid is %@",customer.usid);
-                        NSLog(@"the unames is %@",[self getStoresID]);
-                        
-                        MemberController * member  = [[MemberController alloc] init];
-                        // member.query = searcktextField.text;
-                        member.query = customer.cid;
-                        member.delegate=self;
-                        member.cardState=cardState;
-                        // member.query = @"O0029000150";
-                        [self.navigationController pushViewController:member animated:YES];
-                        [SVProgressHUD dismiss];
-                        break;
-                    }
-                }
-                
-                //后查询余零卡
-                for (CustomersQuery * customer in tempArray) {
-                    NSString * uid = [self getStoresID];
-                    NSString * cardState = customer.cardstate;
-                    if ([customer.usid isEqualToString:uid] == NO) {
-                        UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"" message:@"不是该门店的客户，禁止查询" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
-                        [alert show];
-                        if (queryFlag == 0) {
-                            searcktextField.text=@"";
-                        }else{
-                            searcktextField.text = @"";
-                        }
-                        [SVProgressHUD dismiss];
-                        break;
-                    }
-                    
-                    if ([customer.cardstate isEqualToString:@"9"]) {
-                        
-                        NSLog(@"the uid is %@",customer.usid);
-                        NSLog(@"the unames is %@",[self getStoresID]);
-                        
-                        MemberController * member  = [[MemberController alloc] init];
-                        // member.query = searcktextField.text;
-                        member.query = customer.cid;
-                        member.delegate=self;
-                        member.cardState=cardState;
-                        // member.query = @"O0029000150";
-                        [self.navigationController pushViewController:member animated:YES];
-                        [SVProgressHUD dismiss];
-                        break;
-                    }
-                }
-                
-               
-            }
+            WEAKSELF
+            [[XMLmanage shardSingleton] getGuestInfoWithPhone:searcktextField.text withUsername:@"sanmoon" withPwd:@"sm147369" withCompleteBlock:^(GusetListRootClass *bassClass) {
+                [weakself searchWithPhoneOrGuestId:bassClass.data];
+            }];
             
         }
         
@@ -2476,59 +2392,146 @@ NSLog(@"self.data_updata==%@",self.data_updata);
             [SVProgressHUD showInfoWithStatus:@"请输入顾客姓名"];
             return;
         }
-        
-        NSMutableArray * array =[NSMutableArray arrayWithArray:[[XMLmanage shardSingleton] getGuestInfoWithName:searcktextField.text  withUsername:@"sanmoon" withPwd:@"sm147369"]];
-        
-        if ([array count] == 0)
-        {
-            UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"" message:@"该顾客还不是会员，没有信息" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
-            [alert show];
-            if (queryFlag == 0) {
-                searcktextField.text=@"";
-            }else{
-                searcktextField.text = @"";
-            }
-            [SVProgressHUD dismiss];
+        WEAKSELF
+        [[XMLmanage shardSingleton] getGuestInfoWithName:searcktextField.text withUsername:@"sanmoon" withPwd:@"sm147369" withCompleteBlock:^(GusetListRootClass *bassClass) {
+            [weakself searchWithName:bassClass.data];
+        }];
 
-            return;
-        }
-        CustomersQuery * customer  = [array objectAtIndex:0];
-        NSString * cardState = customer.cardstate;
-        NSString * uid = [self getStoresID];
-        if ([customer.usid isEqualToString:uid] == NO) {
-            UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"" message:@"不是该门店的客户，禁止查询" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
-            [alert show];
-            if (queryFlag == 0) {
-                searcktextField.text=@"";
-            }else{
-                searcktextField.text = @"";
-            }
-
-            [SVProgressHUD dismiss];
-            return;
-        }
-     //   if ([cardState isEqualToString:@"1"]) {
-          //   searcktextField.text=@"";
-            CustomerController * customervc  = [[CustomerController alloc] init];
-            customervc.array = array;
-            customervc.delegate=self;
-         //   customervc.cardState=cardState;
-          NSLog(@"customervc.cardState=%@",customervc.cardState);
-            [self.navigationController pushViewController:customervc animated:YES];
-            [SVProgressHUD dismiss];
-        
-    //    }
-//        else
-//        {
-//            UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"" message:@"该卡已处于禁用状态，请重新激活" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
-//            [alert show];
-//            searcktextField.text = @"";
-//            [SVProgressHUD dismiss];
-//
-//        }
-    }
+     }
     }
 }
+
+- (void)searchWithPhoneOrGuestId:(NSArray *)array
+{
+    if ([array count] == 0) {
+        UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"" message:@"该顾客还不是会员，没有信息" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+        [alert show];
+        searcktextField.text = @"";
+        [SVProgressHUD dismiss];
+        return;
+    }else{
+        //如果存在补卡状态则过滤掉2020.7.2////////////////
+        //客户状态01.空账户；02.正常账户；03.余零账户；04.冻结账户；05.新客账户
+        NSMutableArray *tempArray = [NSMutableArray arrayWithCapacity:0];
+        for (int i = 0; i< array.count; i++) {
+            GusetListData * customer = [array objectAtIndex:i];
+            if ([customer.gueststate integerValue] == 2 || [customer.gueststate integerValue] == 3) {
+                [tempArray addObject:customer];
+            }
+        }
+        if (tempArray.count == 0) {
+            [SVProgressHUD showInfoWithStatus:@"此卡状态异常"];
+        }else{
+            //先查询正常卡
+            NSMutableArray *usidArray = [NSMutableArray arrayWithCapacity:0];
+            for (GusetListData *listData in array) {
+                [usidArray addObject:listData.usid];
+            }
+            NSString * uid = [self getStoresID];
+            if ([usidArray containsObject:uid] == NO) {
+                UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"" message:@"不是该门店的客户，禁止查询" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+                [alert show];
+                if (queryFlag == 0) {
+                    searcktextField.text=@"";
+                }else{
+                    searcktextField.text = @"";
+                }
+                [SVProgressHUD dismiss];
+                return;
+            }
+            for (GusetListData * customer in tempArray) {
+                
+                NSString * cardState = customer.gueststate;
+                if ([customer.gueststate integerValue] == 2) {
+                    
+                    NSLog(@"the uid is %@",customer.usid);
+                    NSLog(@"the unames is %@",[self getStoresID]);
+                    
+                    MemberController * member  = [[MemberController alloc] init];
+                    // member.query = searcktextField.text;
+                    member.query = customer.gid;
+                    member.delegate=self;
+                    member.cardState=cardState;
+                    // member.query = @"O0029000150";
+                    [self.navigationController pushViewController:member animated:YES];
+                    [SVProgressHUD dismiss];
+                    break;
+                }
+            }
+            
+            //后查询余零卡
+            for (GusetListData * customer in tempArray) {
+                if ([customer.gueststate integerValue] == 3) {
+                    NSString * cardState = customer.gueststate;
+                    NSLog(@"the uid is %@",customer.usid);
+                    NSLog(@"the unames is %@",[self getStoresID]);
+                    
+                    MemberController * member  = [[MemberController alloc] init];
+                    // member.query = searcktextField.text;
+                    member.query = customer.gid;
+                    member.delegate=self;
+                    member.cardState=cardState;
+                    // member.query = @"O0029000150";
+                    [self.navigationController pushViewController:member animated:YES];
+                    [SVProgressHUD dismiss];
+                    break;
+                }
+            }
+            
+            
+        }
+        
+    }
+}
+
+
+- (void)searchWithName:(NSArray *)array
+{
+    if ([array count] == 0)
+    {
+        UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"" message:@"该顾客还不是会员，没有信息" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+        [alert show];
+        if (queryFlag == 0) {
+            searcktextField.text=@"";
+        }else{
+            searcktextField.text = @"";
+        }
+        [SVProgressHUD dismiss];
+        
+        return;
+    }
+    //            CustomersQuery * customer  = [bassClass.data objectAtIndex:0];
+    //            NSString * cardState = customer.cardstate;
+    NSString * uid = [self getStoresID];
+    NSLog(@"uid = %@",uid);
+    NSMutableArray *usidArray = [NSMutableArray arrayWithCapacity:0];
+    for (GusetListData *listData in array) {
+        [usidArray addObject:listData.usid];
+    }
+    if ([usidArray containsObject:uid] == NO) {
+        UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"" message:@"不是该门店的客户，禁止查询" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+        [alert show];
+        if (queryFlag == 0) {
+            searcktextField.text=@"";
+        }else{
+            searcktextField.text = @"";
+        }
+        [SVProgressHUD dismiss];
+        return;
+    }
+    
+    //   if ([cardState isEqualToString:@"1"]) {
+    //   searcktextField.text=@"";
+    CustomerController * customervc  = [[CustomerController alloc] init];
+    customervc.array = array;
+    customervc.delegate=self;
+    //   customervc.cardState=cardState;
+    NSLog(@"customervc.cardState=%@",customervc.cardState);
+    [self.navigationController pushViewController:customervc animated:YES];
+    [SVProgressHUD dismiss];
+}
+
+
 - (void)changeText2
 {
     NSLog(@"响应代理2");

@@ -671,12 +671,12 @@ NSString * ldxNumber;
   
     NSString * url;
     if ([self.itemType isEqualToString:@"7"]) {
-      //  url = @"http://113.140.20.6//getdata/GetData.asmx/SaleProduct?HTTP/1.1";
-        url=[NSString stringWithFormat:@"%@GetData.asmx/SaleProduct?HTTP/1.1",RIP];
+      //  url = @"http://113.140.20.6//getdata/GetData.asmx/SaleProduct?";
+        url=[NSString stringWithFormat:@"%@GetData.asmx/SaleProduct?",RIP];
     }
     else
     {
-       url = [NSString stringWithFormat:@"%@GetData.asmx/SaleItem?HTTP/1.1",RIP];
+       url = [NSString stringWithFormat:@"%@GetData.asmx/SaleItem?",RIP];
         
     }
     NSMutableArray *jsonArray = [[NSMutableArray alloc] init];
@@ -891,7 +891,7 @@ NSString * ldxNumber;
     NSString * cid = [defaults stringForKey:@"UID"];
     
    // NSString * expUrl = @"http://113.140.20.6/csgetdata/GetData.asmx?op=GetGuestExp";
-    NSString * expUrl = [NSString stringWithFormat:@"%@GetData.asmx/GetGuestExp?HTTP/1.1",RIP];
+    NSString * expUrl = [NSString stringWithFormat:@"%@GetData.asmx/GetGuestExp?",RIP];
    // NSString * ldxUrl = @"http://113.140.20.6/csgetdata/GetData.asmx?op=GetGuestFrd";
     
     NSURL * postURL = [NSURL URLWithString:expUrl];
@@ -931,7 +931,7 @@ NSString * ldxNumber;
     NSString * cid = [defaults stringForKey:@"UID"];
     
     // NSString * expUrl = @"http://113.140.20.6/csgetdata/GetData.asmx?op=GetGuestExp";
-    NSString * expUrl = [NSString stringWithFormat:@"%@GetData.asmx/GetGuestFrd?HTTP/1.1",RIP];
+    NSString * expUrl = [NSString stringWithFormat:@"%@GetData.asmx/GetGuestFrd?",RIP];
     // NSString * ldxUrl = @"http://113.140.20.6/csgetdata/GetData.asmx?op=GetGuestFrd";
     
     NSURL * postURL = [NSURL URLWithString:expUrl];

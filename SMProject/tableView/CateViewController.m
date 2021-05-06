@@ -59,7 +59,6 @@ NSString * fwtimes;
     
    // [self getData];
     
-    
     UIImageView *imageView=(UIImageView *)[self.view viewWithTag:10000];
     [imageView removeFromSuperview];
     UIImageView *imageView2=(UIImageView *)[self.view viewWithTag:10000];

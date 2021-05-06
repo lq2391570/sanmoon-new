@@ -37,9 +37,10 @@
     [super viewDidLoad];
     _tempArray = [NSMutableArray arrayWithCapacity:0];
     // Do any additional setup after loading the view from its nib.
+#warning 客户状态01.空账户；02.正常账户；03.余零账户；04.冻结账户；05.新客账户
     for (int i = 0; i<self.array.count; i++) {
-        CustomersQuery * customer = [self.array objectAtIndex:i];
-        if ([customer.cardstate isEqualToString:@"1"] || [customer.cardstate isEqualToString:@"9"]) {
+        GusetListData * customer = [self.array objectAtIndex:i];
+        if ([customer.gueststate integerValue] == 2 || [customer.gueststate integerValue] == 3) {
             [_tempArray addObject:customer];
         }
     }
@@ -95,9 +96,9 @@
             }
         }
     }
-    CustomersQuery * customer = [_tempArray objectAtIndex:indexPath.row - 1];
-    custom.cardLab.text = customer.cid;
-    custom.nameLab.text = customer.gsname;
+    GusetListData * customer = [_tempArray objectAtIndex:indexPath.row - 1];
+    custom.cardLab.text = customer.gid;
+    custom.nameLab.text = customer.gname;
     custom.selectionStyle = UITableViewCellSelectionStyleBlue;
     custom.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     //if ([order.type isEqualToString:@"7"])
@@ -145,11 +146,11 @@
         if ([self isConnectionAvailable] == NO) {
             
         }else{
-            CustomersQuery * customer = [_tempArray objectAtIndex:indexPath.row -1];
+            GusetListData * customer = [_tempArray objectAtIndex:indexPath.row -1];
             MemberController * member  = [[MemberController alloc] init];
-            member.query = customer.cid;
-            member.cardState=customer.cardstate;
-            if (customer.cid!=nil) {
+            member.query = customer.gid;
+            member.cardState=customer.gueststate;
+            if (customer.gid!=nil) {
                 [self.navigationController pushViewController:member animated:YES];
             }
         }

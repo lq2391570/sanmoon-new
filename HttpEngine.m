@@ -15,44 +15,52 @@
 #import "SerRecordBaseClass.h"
 #import "ProjectListNewBaseClass.h"
 #import "ProSerPhotoListBaseClass.h"
+#import "AFNetworking.h"
+
+#import "NSString+MJExtension.h"
+#import "NSObject+MJKeyValue.h"
 
 @implementation HttpEngine
 //得到项目列表
-+ (void)getProjectList:(NSString *)cid complete:(void (^) (NSMutableArray *tempArray))complete
++ (void)getProjectList:(NSString *)gid complete:(void (^) (NSMutableArray *tempArray))complete
 {
-    ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@GetData.asmx/GetGuestBuyItemCid?HTTP/1.1",RIP]]];
-    [request setRequestMethod:@"post"];
-    [request setTimeOutSeconds:30];
-    [request addPostValue:cid forKey:@"cid"];
-    [request addPostValue:@"sanmoon" forKey:@"username"];
-    [request addPostValue:@"sm147369" forKey:@"userpass"];
-    [request setCompletionBlock:^{
-     //   NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:request.responseData options:NSJSONReadingMutableContainers error:nil];
-        
-        GDataXMLDocument *doc = [[GDataXMLDocument alloc] initWithXMLString:request.responseString options:0 error:nil];
-        GDataXMLElement *rootElement = [doc rootElement];
-        NSLog(@"rootElement = %@",[rootElement stringValue]);
-        NSData * jsondata = [[rootElement stringValue] dataUsingEncoding:NSUTF8StringEncoding];
-        NSError *error = nil;
-        NSArray *jsonArray = [NSJSONSerialization JSONObjectWithData:jsondata options:NSJSONReadingMutableContainers error:&error];
-        NSMutableArray *temparray = [NSMutableArray arrayWithCapacity:0];
-        for (int i =0; i < jsonArray.count; i++) {
-            NSDictionary *dic = [jsonArray objectAtIndex:i];
-             ProjectList *listModel = [ProjectList modelObjectWithDictionary:dic];
-            [temparray addObject:listModel];
-           // NSLog(@"dic = %@",jsonDict);
-            NSLog(@"listModel.uname = %@",listModel.uname);
-        }
-        
-      //  NSLog(@"responseString=%@",request.responseString);
-        if (complete) {
-            complete (temparray);
-        }
-    }];
-    [request setFailedBlock:^{
-        NSLog(@"%@",request.error);
-    }];
-    [request startAsynchronous];
+//    ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@GetData.asmx/GetGuestBuyItemCid?",RIP]]];
+//    [request setRequestMethod:@"post"];
+//    [request setTimeOutSeconds:30];
+//    [request addPostValue:cid forKey:@"cid"];
+//    [request addPostValue:@"sanmoon" forKey:@"username"];
+//    [request addPostValue:@"sm147369" forKey:@"userpass"];
+//    [request setCompletionBlock:^{
+//     //   NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:request.responseData options:NSJSONReadingMutableContainers error:nil];
+//        GDataXMLDocument *doc = [[GDataXMLDocument alloc] initWithXMLString:request.responseString options:0 error:nil];
+//        GDataXMLElement *rootElement = [doc rootElement];
+//        NSLog(@"rootElement = %@",[rootElement stringValue]);
+//        NSData * jsondata = [[rootElement stringValue] dataUsingEncoding:NSUTF8StringEncoding];
+//        NSError *error = nil;
+//        NSArray *jsonArray = [NSJSONSerialization JSONObjectWithData:jsondata options:NSJSONReadingMutableContainers error:&error];
+//        NSMutableArray *temparray = [NSMutableArray arrayWithCapacity:0];
+//        for (int i =0; i < jsonArray.count; i++) {
+//            NSDictionary *dic = [jsonArray objectAtIndex:i];
+//             ProjectList *listModel = [ProjectList modelObjectWithDictionary:dic];
+//            [temparray addObject:listModel];
+//           // NSLog(@"dic = %@",jsonDict);
+//            NSLog(@"listModel.uname = %@",listModel.uname);
+//        }
+//
+//      //  NSLog(@"responseString=%@",request.responseString);
+//        if (complete) {
+//            complete (temparray);
+//        }
+//    }];
+//    [request setFailedBlock:^{
+//        NSLog(@"%@",request.error);
+//    }];
+//    [request startAsynchronous];
+    
+    [HttpEngine requestGETWithReqStr:GetGuestBuyItemGid withComplete:^(NSDictionary *responseObj) {
+        NSLog(@"GuestBuyItemResponSe= %@",responseObj);
+    } dic:@{@"pgid":gid,@"username":@"sanmoon",@"userpass":@"sm147369"}];
+    
     
 }
 //得到项目列表新
@@ -270,6 +278,71 @@
     
     
 }
+
+
+/////////新改变的接口//////
+
+
+
+
+
+
+//json
++ (void)requestJsonWithReqStr:(NSString *)reqStr withComplete:(void (^) (NSDictionary *responseObj))complete dic:(NSDictionary *)dic
+{
+    AFURLSessionManager *manager = [[AFURLSessionManager alloc] initWithSessionConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration]];
+    NSString *jsonStr = [dic mj_JSONString];
+    NSMutableURLRequest *req = [[AFJSONRequestSerializer serializer] requestWithMethod:@"POST" URLString:[NSString stringWithFormat:@"%@%@",RIP,reqStr] parameters:nil error:nil];
+    NSLog(@"jsonStr = %@",jsonStr);
+    req.timeoutInterval= [[[NSUserDefaults standardUserDefaults] valueForKey:@"timeoutInterval"] longValue];
+    [req setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+    [req setValue:@"application/json" forHTTPHeaderField:@"Accept"];
+    [req setHTTPBody:[jsonStr dataUsingEncoding:NSUTF8StringEncoding]];
+
+    [[manager dataTaskWithRequest:req completionHandler:^(NSURLResponse * _Nonnull response, id  _Nullable responseObject, NSError * _Nullable error) {
+        if (!error) {
+            NSLog(@"WOMeetingCopyModel: %@", responseObject);
+            if (complete) {
+                complete(responseObject);
+            }
+        } else {
+            NSLog(@"Error: %@, %@, %@", error, response, responseObject);
+        }
+    }] resume];
+}
+//post
++ (void)requestPostWithReqStr:(NSString *)reqStr withComplete:(void (^) (NSDictionary *responseObj))complete dic:(NSDictionary *)dic
+{
+    AFHTTPSessionManager *session=[AFHTTPSessionManager manager];
+    [session POST:[NSString stringWithFormat:@"%@%@",RIP,reqStr] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        NSLog(@"WODeleteRootClass=%@",responseObject);
+        if (complete) {
+            complete(responseObject);
+        }
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        [SVProgressHUD showErrorWithStatus:@"请求失败"];
+        NSLog(@"%@",error);
+    }];
+}
+//GET
++ (void)requestGETWithReqStr:(NSString *)reqStr withComplete:(void (^) (NSDictionary *responseObj))complete dic:(NSDictionary *)dic
+{
+    AFHTTPSessionManager *session=[AFHTTPSessionManager manager];
+    [session GET:[NSString stringWithFormat:@"%@%@",RIP,reqStr] parameters:dic progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        NSLog(@"modifypwdBassClass=%@",responseObject);
+        if (complete) {
+            complete(responseObject);
+        }
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        [SVProgressHUD showErrorWithStatus:@"请求失败"];
+        NSLog(@"%@",error);
+    }];
+}
+
+
+
+
+
 
 
 @end

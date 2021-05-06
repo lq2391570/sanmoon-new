@@ -12,7 +12,7 @@
 #import "ASIFormDataRequest.h"
 #import "SVProgressHUD.h"
 
-#define archivesURL [NSString stringWithFormat:@"%@GetData.asmx/SetGuestInfo?HTTP/1.1",RIP]
+#define archivesURL [NSString stringWithFormat:@"%@GetData.asmx/SetGuestInfo?",RIP]
 
 #define kPopViewWidth       200
 #define kPopViewHeight      120

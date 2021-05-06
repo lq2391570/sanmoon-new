@@ -35,10 +35,10 @@
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     self.tableView.tableFooterView = [UIView new];
     self.isOpenArray = [NSMutableArray arrayWithCapacity:0];
-   // [self getProjectList:self.cid];
+//    [self getProjectList:self.gid];
     self.nameLabel.text = [NSString stringWithFormat:@"会员姓名:%@",self.uname];
-    self.cardNumlabel.text = [NSString stringWithFormat:@"会员卡号:%@",self.cid];
-    [self getProjectListNew:self.cid];
+    self.cardNumlabel.text = [NSString stringWithFormat:@"会员卡号:%@",self.gid];
+    [self getProjectListNew:self.gid];
     //初始化二维数组
     self.twoDimensionArray = [NSMutableArray arrayWithCapacity:0];
     
@@ -111,7 +111,7 @@
 //得到某一条项目的图片列表
 - (void)getProPhotoList:(NSString *)proId section:(NSInteger)section
 {
-    [HttpEngine getProSerBeforePhotoList:self.cid proId:proId complete:^(NSMutableArray *tempArray) {
+    [HttpEngine getProSerBeforePhotoList:self.gid proId:proId complete:^(NSMutableArray *tempArray) {
         NSLog(@"ProPhotoListArray = %@",tempArray);
        
         NSMutableArray *imageArray = [self.twoDimensionArray objectAtIndex:section];
@@ -304,14 +304,14 @@
      ProjectListNewBaseClass *listModel = [self.tempArray objectAtIndex:self.selectUploadBtnNum];
     
     NSString *timeStr = [listModel.xssj stringByReplacingOccurrencesOfString:@"/" withString:@"-"];
-     NSLog(@"self.cid = %@,listModel.iid=%@,listModel.iname=%@,listModel.itname=%@,listModel.uname=%@,listModel.xssj=%@",self.cid,listModel.iid,listModel.iname,listModel.itname,listModel.uname,timeStr);
+     NSLog(@"self.cid = %@,listModel.iid=%@,listModel.iname=%@,listModel.itname=%@,listModel.uname=%@,listModel.xssj=%@",self.gid,listModel.iid,listModel.iname,listModel.itname,listModel.uname,timeStr);
     
-    [HttpEngine uploadProductSerPhoto:self.cid proId:listModel.iid proName:listModel.iname proStyleName:listModel.itname proBuyArea:listModel.uname proTime:timeStr setDelegateVC:self complete:^(NSString *errorCode,NSString *msg) {
+    [HttpEngine uploadProductSerPhoto:self.gid proId:listModel.iid proName:listModel.iname proStyleName:listModel.itname proBuyArea:listModel.uname proTime:timeStr setDelegateVC:self complete:^(NSString *errorCode,NSString *msg) {
         if ([errorCode boolValue] == true) {
              [SVProgressHUD showSuccessWithStatus:@"上传图片成功"];
             dispatch_time_t delayTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC));
             dispatch_after(delayTime, dispatch_get_main_queue(), ^{
-                [self getProjectListNew:self.cid];
+                [self getProjectListNew:self.gid];
                 [self getProPhotoList:listModel.iid section:self.currentSelectSection];
 
             });

@@ -59,52 +59,72 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-   NSArray * array  = [[XMLmanage shardSingleton] getGSNumber:self.query withUsername:@"sanmoon" withPwd:@"sm147369"];
+//   NSArray * array  = [[XMLmanage shardSingleton] getGSNumber:self.query withUsername:@"sanmoon" withPwd:@"sm147369"];
+    
+    [[XMLmanage shardSingleton] getGSNumber:self.query withUsername:@"sanmoon" withPwd:@"sm147369" withCompleteBlock:^(GuestInfoRootClass *bassClass) {
+        if (bassClass.data.count > 0) {
+            CustomersInfo * info = [bassClass.data objectAtIndex:0];
+            
+            NSLog(@"info = %@",info);
+            self.ahView.layer.cornerRadius = 8.0f;
+            self.gmsView.layer.cornerRadius = 8.0f;
+            self.yqView.layer.cornerRadius = 8.0f;
+            
+            self.name.text = info.gname;
+            self.jdTime.text = info.jdsj;
+            self.zjTime.text = info.lasttime;
+            self.gkNO.text = info.gid;
+            self.cardNO.text = self.query;
+            self.ahText.text = info.gfancy;
+            self.gmsText.text = info.sfgm;
+            self.remarkText.text = info.grequest;
+            
+ //           客户状态01.空账户；02.正常账户；03.余零账户；04.冻结账户；05.新客账户
+            if ([self.cardState integerValue]==1) {
+                self.daNO.text=@"空账户";
+            }else if ([self.cardState integerValue]==2){
+                self.daNO.text=@"正常";
+            }else if ([self.cardState integerValue]==3){
+                self.daNO.text=@"余零";
+            }else if ([self.cardState integerValue]==4){
+                self.daNO.text=@"已冻结";
+            }else if ([self.cardState integerValue]==5){
+                self.daNO.text=@"新客";
+            }
+//            if ([self.cardState integerValue]==0) {
+//                self.daNO.text=@"补卡";
+//            }else if ([self.cardState integerValue]==1){
+//                self.daNO.text=@"正常";
+//            }else if ([self.cardState integerValue]==2){
+//                self.daNO.text=@"未激活";
+//            }else if ([self.cardState integerValue]==3){
+//                self.daNO.text=@"已转卡";
+//            }else if ([self.cardState integerValue]==4){
+//                self.daNO.text=@"挂失";
+//            }else if ([self.cardState integerValue]==5){
+//                self.daNO.text=@"已完成";
+//            }else if ([self.cardState integerValue]==6){
+//                self.daNO.text=@"退卡";
+//            }else if ([self.cardState integerValue]==7){
+//                self.daNO.text=@"冻结";
+//            }else if ([self.cardState integerValue]==8){
+//                self.daNO.text=@"已合卡";
+//            }else if ([self.cardState integerValue]==9){
+//                self.daNO.text=@"余零";
+//            }
+            
+            NSLog(@"%@==--==",self.query);
+            [self getUserPhoto];
+            
+            [self installSmlTicketsView];
+            
+            [self getFirstSerList];
+        }
+    }];
     
     
-    CustomersInfo * info = [array objectAtIndex:0];
     
-    NSLog(@"info = %@",info);
-    self.ahView.layer.cornerRadius = 8.0f;
-    self.gmsView.layer.cornerRadius = 8.0f;
-    self.yqView.layer.cornerRadius = 8.0f;
-
-    self.name.text = info.gname;
-    self.jdTime.text = info.jdsj;
-    self.zjTime.text = info.lasttime;
-    self.gkNO.text = info.gid;
-    self.cardNO.text = self.query;
-    self.ahText.text = info.gfancy;
-    self.gmsText.text = info.sfgm;
-    self.remarkText.text = info.grequest;
-    if ([self.cardState integerValue]==0) {
-        self.daNO.text=@"补卡";
-    }else if ([self.cardState integerValue]==1){
-        self.daNO.text=@"正常";
-    }else if ([self.cardState integerValue]==2){
-        self.daNO.text=@"未激活";
-    }else if ([self.cardState integerValue]==3){
-        self.daNO.text=@"已转卡";
-    }else if ([self.cardState integerValue]==4){
-        self.daNO.text=@"挂失";
-    }else if ([self.cardState integerValue]==5){
-        self.daNO.text=@"已完成";
-    }else if ([self.cardState integerValue]==6){
-        self.daNO.text=@"退卡";
-    }else if ([self.cardState integerValue]==7){
-        self.daNO.text=@"冻结";
-    }else if ([self.cardState integerValue]==8){
-        self.daNO.text=@"已合卡";
-    }else if ([self.cardState integerValue]==9){
-        self.daNO.text=@"余零";
-    }
-    
-    NSLog(@"%@==--==",self.query);
-    [self getUserPhoto];
-    
-    [self installSmlTicketsView];
-    
-    [self getFirstSerList];
+   
 
     // Do any additional setup after loading the view from its nib.
 }
@@ -209,9 +229,8 @@
 - (void)projectListBtnClick
 {
     ProjectListVC *vc = [[ProjectListVC alloc] init];
-    vc.cid = self.cardNO.text;
+    vc.gid = self.cardNO.text;
     vc.uname = self.name.text;
-    
     [self.navigationController pushViewController:vc animated:YES];
     
 }
