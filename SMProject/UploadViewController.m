@@ -442,7 +442,9 @@ NSString * serviceFlag;
             
             [request setPostValue:serviceFlag forKey:@"memberArchive.archiveState"];
     NSLog(@"self.serverDate=%@",self.serverDate);
-           [request setPostValue:self.serverDate forKey:@"memberArchive.archiveServiceTime"];
+    NSString *dateStr = [self.serverDate stringByReplacingOccurrencesOfString:@"-" withString:@"/"];
+    
+           [request setPostValue:dateStr forKey:@"memberArchive.archiveServiceTime"];
     
             [request setUploadProgressDelegate:self];
             NSString *documentsDirectory = [NSHomeDirectory() stringByAppendingPathComponent:@"Library"];

@@ -171,7 +171,7 @@
         NSLog(@"%@",request.error);
     }];
     [request startAsynchronous];
-    
+
 }
 //得到服务记录list（新）
 + (void)getSerRecordListNew:(NSString *)serNum complete:(void (^) (NSMutableArray *tempArray))complete

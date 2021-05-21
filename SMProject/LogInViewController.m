@@ -371,6 +371,8 @@
             
        
     }else if([self.ipadStatus isEqualToNumber:[NSNumber numberWithInteger:-1]]){
+#pragma mark rebuilding
+        [self.delegate changeRootViewController];
         UIAlertView *alert=[[UIAlertView alloc] initWithTitle:@"提示" message:@"该设备未激活" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
         [alert show];
 #pragma mark 模拟器调试

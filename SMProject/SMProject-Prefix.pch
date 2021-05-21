@@ -32,12 +32,20 @@
 //#define LocationIp @"http://192.168.20.78:8080/CsSanmoon/"
 
 
-//测试版//////////////////////////////
+////测试版//////////////////////////////
+//#define ReLocation @"https://ipad.sanmoon.net/version/cssanmoon/CSSMVersion.html"
+//#define LocationIp @"http://ipad.sanmoon.net:9999/CsSanmoon/"
+//#define RIP @"http://113.140.20.6/csgetdata/"
+//#define ReLocationPlist @"itms-services://?action=download-manifest&url=https://ipad.sanmoon.net/version/cssanmoon/CSSanmoon.plist";
+
+//////////////////2.0测试
 #define ReLocation @"https://ipad.sanmoon.net/version/cssanmoon/CSSMVersion.html"
 #define LocationIp @"http://ipad.sanmoon.net:9999/CsSanmoon/"
-//#define RIP @"http://113.140.20.6/csgetdata/"
 #define RIP @"http://113.140.20.4:8080/ipaddata/"
 #define ReLocationPlist @"itms-services://?action=download-manifest&url=https://ipad.sanmoon.net/version/cssanmoon/CSSanmoon.plist";
+
+
+
 
 //正式版////////////////////////////
 //#define ReLocation @"https://ipad.sanmoon.net/version/sanmoon/SMVersion.html"
