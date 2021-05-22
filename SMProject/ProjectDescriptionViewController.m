@@ -494,7 +494,7 @@ FMDatabase *__db = nil;
 {
     NSArray * dir = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
     NSString * documentDirectory = [dir objectAtIndex:0];
-    NSString * dirPath = [documentDirectory stringByAppendingPathComponent:@"cover1"];
+    NSString * dirPath = [documentDirectory stringByAppendingPathComponent:@"cover"];
     NSFileManager *fileManager = [NSFileManager defaultManager];
     
     self.coverImageArray = [NSMutableArray arrayWithCapacity:10];
@@ -924,7 +924,6 @@ FMDatabase *__db = nil;
 //                      bgColor:[[UIColor blackColor] CGColor]
 //                       inView:self.view
 //                     vertical:0.4];
-         [self getResourceByVersion:onLineID];
         
     }
     
@@ -942,7 +941,7 @@ FMDatabase *__db = nil;
             if (coverName.length > 0) {
                 NSArray * dir = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
                 NSString * documentDirectory = [dir objectAtIndex:0];
-                NSString * dirPath = [documentDirectory stringByAppendingPathComponent:@"cover1"];
+                NSString * dirPath = [documentDirectory stringByAppendingPathComponent:@"cover"];
                 NSFileManager *fileManager = [NSFileManager defaultManager];
                 NSLog(@"the delete file name is %@",coverName);
                 NSString * filePath = [dirPath stringByAppendingPathComponent:coverName];
@@ -1051,7 +1050,7 @@ FMDatabase *__db = nil;
         self.subIdArray = [NSMutableArray arrayWithCapacity:10];
         NSArray * dir = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
         NSString * documentDirectory = [dir objectAtIndex:0];
-        NSString * dirPath = [documentDirectory stringByAppendingPathComponent:@"cover1"];
+        NSString * dirPath = [documentDirectory stringByAppendingPathComponent:@"cover"];
         NSString * fileName;
         
         NSLog(@"bookArray is %@",bookArray);
@@ -1190,16 +1189,16 @@ FMDatabase *__db = nil;
 
 - (void)getCoverImageWithOutInternet
 {
-    self.coverImageArray = [NSMutableArray arrayWithCapacity:10];
-    self.idArray = [NSMutableArray arrayWithCapacity:10];
-    self.coverVersionArray = [NSMutableArray arrayWithCapacity:10];
-    self.compArry = [NSMutableArray arrayWithCapacity:10];
-    self.subImages = [NSMutableArray arrayWithCapacity:10];
-    self.subIdArray = [NSMutableArray arrayWithCapacity:10];
-    backArray = [NSMutableArray arrayWithCapacity:10];
+    self.coverImageArray = [NSMutableArray arrayWithCapacity:0];
+    self.idArray = [NSMutableArray arrayWithCapacity:0];
+    self.coverVersionArray = [NSMutableArray arrayWithCapacity:0];
+    self.compArry = [NSMutableArray arrayWithCapacity:0];
+    self.subImages = [NSMutableArray arrayWithCapacity:0];
+    self.subIdArray = [NSMutableArray arrayWithCapacity:0];
+    backArray = [NSMutableArray arrayWithCapacity:0];
     NSArray * dir = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
     NSString * documentDirectory = [dir objectAtIndex:0];
-    NSString * dirPath = [documentDirectory stringByAppendingPathComponent:@"cover1"];
+    NSString * dirPath = [documentDirectory stringByAppendingPathComponent:@"cover"];
     NSMutableArray *array = [NSMutableArray arrayWithCapacity:10];
     NSString * fileName;
     [[ProjectManage shardSingleton] searchInDbBycompId:backstr returnArray:&array];
@@ -1232,7 +1231,7 @@ FMDatabase *__db = nil;
 - (NSString *)getcoverimagepath:(NSString *)name
 {
     NSString * docsDir = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex:0];
-    NSString * dirPath = [docsDir stringByAppendingPathComponent:@"cover1"];
+    NSString * dirPath = [docsDir stringByAppendingPathComponent:@"ephoto"];
     
     NSFileManager *fileManager = [NSFileManager defaultManager];
     NSError * error;

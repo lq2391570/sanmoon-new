@@ -1187,7 +1187,7 @@ FMDatabase *__infoDb = nil;
 {
     NSArray * dir = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
     NSString * documentDirectory = [dir objectAtIndex:0];
-    NSString * dirPath = [documentDirectory stringByAppendingPathComponent:@"informationCover"];
+    NSString * dirPath = [documentDirectory stringByAppendingPathComponent:@"cover"];
     NSFileManager *fileManager = [NSFileManager defaultManager];
     
     self.coverImageArray = [NSMutableArray arrayWithCapacity:10];
@@ -1613,7 +1613,7 @@ FMDatabase *__infoDb = nil;
             if (coverName.length > 0) {
                 NSArray * dir = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
                 NSString * documentDirectory = [dir objectAtIndex:0];
-                NSString * dirPath = [documentDirectory stringByAppendingPathComponent:@"informationCover"];
+                NSString * dirPath = [documentDirectory stringByAppendingPathComponent:@"cover"];
                 NSFileManager *fileManager = [NSFileManager defaultManager];
                 NSLog(@"the delete file name is %@",coverName);
                 NSString * filePath = [dirPath stringByAppendingPathComponent:coverName];
@@ -1708,7 +1708,7 @@ FMDatabase *__infoDb = nil;
         self.subIdArray = [NSMutableArray arrayWithCapacity:10];
         NSArray * dir = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
         NSString * documentDirectory = [dir objectAtIndex:0];
-        NSString * dirPath = [documentDirectory stringByAppendingPathComponent:@"informationCover"];
+        NSString * dirPath = [documentDirectory stringByAppendingPathComponent:@"cover"];
         NSString * fileName;
         
         NSString * path;
@@ -1861,7 +1861,7 @@ FMDatabase *__infoDb = nil;
     
     NSArray * dir = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
     NSString * documentDirectory = [dir objectAtIndex:0];
-    NSString * dirPath = [documentDirectory stringByAppendingPathComponent:@"informationCover"];
+    NSString * dirPath = [documentDirectory stringByAppendingPathComponent:@"cover"];
     NSMutableArray *array = [NSMutableArray arrayWithCapacity:10];
     NSString * fileName;
     
@@ -1895,7 +1895,7 @@ FMDatabase *__infoDb = nil;
 - (NSString *)getcoverimagepath:(NSString *)name
 {
     NSString * docsDir = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex:0];
-    NSString * dirPath = [docsDir stringByAppendingPathComponent:@"informationCover"];
+    NSString * dirPath = [docsDir stringByAppendingPathComponent:@"cover"];
     
     NSFileManager *fileManager = [NSFileManager defaultManager];
     NSError * error;

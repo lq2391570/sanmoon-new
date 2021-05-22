@@ -120,18 +120,35 @@ static DownloadModel *shareDownloadModel = nil;
 
 
 +(NSString*)getPath:(NSString*)folder nsurl:(NSString*)nsurl{
-    
-    NSArray * array = [nsurl componentsSeparatedByString:@"resources/images/"];
-    NSString *fileName = [array objectAtIndex:1];
-//    
-//    NSString *pathExtension = [nsurl pathExtension];
-//    NSString *fileName = [self md5:nsurl];//文件更具url练剑 加密出唯一文件名字
-//    fileName = [fileName stringByAppendingString:@"."];
-//    fileName = [fileName stringByAppendingString:pathExtension];
-    NSLog(@"filename:%@",fileName);
-    NSString *documentPath = [self CreateCachePath:[NSString stringWithFormat:@"Library/Caches/ephoto/%@",folder]];//设置下载文件夹
-    documentPath = [documentPath stringByAppendingString:fileName];
-    return documentPath;
+    if ([nsurl containsString:@"resources/images/"]) {
+        NSArray * array = [nsurl componentsSeparatedByString:@"resources/images/"];
+        NSString *fileName = [array objectAtIndex:1];
+        NSLog(@"filename:%@",fileName);
+        NSString *documentPath = [self CreateCachePath:[NSString stringWithFormat:@"Library/Caches/ephoto/%@",folder]];//设置下载文件夹
+        documentPath = [documentPath stringByAppendingString:fileName];
+        return documentPath;
+    }else if ([nsurl containsString:@"resources/img/"]){
+        NSArray * array = [nsurl componentsSeparatedByString:@"resources/img/"];
+        NSString *fileName = [array objectAtIndex:1];
+        NSLog(@"filename:%@",fileName);
+        NSString *documentPath = [self CreateCachePath:[NSString stringWithFormat:@"Library/Caches/cover/%@",folder]];//设置下载文件夹
+        documentPath = [documentPath stringByAppendingString:fileName];
+        return documentPath;
+    }else if ([nsurl containsString:@"resources/videos/"]){
+        NSArray * array = [nsurl componentsSeparatedByString:@"resources/videos/"];
+        NSString *fileName = [array objectAtIndex:1];
+        NSLog(@"filename:%@",fileName);
+        NSString *documentPath = [self CreateCachePath:[NSString stringWithFormat:@"Library/Caches/ephoto/%@",folder]];//设置下载文件夹
+        documentPath = [documentPath stringByAppendingString:fileName];
+        return documentPath;
+    }else{
+        NSArray * array = [nsurl componentsSeparatedByString:@"resources/images/"];
+        NSString *fileName = [array objectAtIndex:1];
+        NSLog(@"filename:%@",fileName);
+        NSString *documentPath = [self CreateCachePath:[NSString stringWithFormat:@"Library/Caches/ephoto/%@",folder]];//设置下载文件夹
+        documentPath = [documentPath stringByAppendingString:fileName];
+        return documentPath;
+    }
 }
 
 

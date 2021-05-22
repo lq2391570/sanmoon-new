@@ -168,7 +168,7 @@
     
     if ([url rangeOfString:@"resources/img"].location != NSNotFound ) {
         
-        NSString * dirPath = [documentDirectory stringByAppendingPathComponent:@"cover1"];
+        NSString * dirPath = [documentDirectory stringByAppendingPathComponent:@"cover"];
         path = [dirPath stringByAppendingPathComponent:name];
         
         NSArray * array = [url componentsSeparatedByString:@"resources/img/"];
@@ -213,7 +213,7 @@
     if ([url rangeOfString:@"resources/img"].location != NSNotFound ) {
         
         // NSString * dirPath = [NSString stringWithFormat:@"cover/%@",name];
-        path = [documentDirectory stringByAppendingPathComponent:@"cover1"];
+        path = [documentDirectory stringByAppendingPathComponent:@"cover"];
         NSArray * array = [url componentsSeparatedByString:@"resources/img/"];
         fileName = [array objectAtIndex:1];
         NSLog(@"the cover path  filename is %@",path);

@@ -610,7 +610,7 @@ static NSString *backstr = @"-1";//记录返回compid
     [SVProgressHUD dismiss];
     NSArray * dir = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
     NSString * documentDirectory = [dir objectAtIndex:0];
-    NSString * dirPath = [documentDirectory stringByAppendingPathComponent:@"cover2"];
+    NSString * dirPath = [documentDirectory stringByAppendingPathComponent:@"cover"];
     NSFileManager *fileManager = [NSFileManager defaultManager];
     
     self.coverImageArray = [NSMutableArray arrayWithCapacity:10];
@@ -1009,7 +1009,7 @@ static NSString *backstr = @"-1";//记录返回compid
             if (coverName.length > 0) {
                 NSArray * dir = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
                 NSString * documentDirectory = [dir objectAtIndex:0];
-                NSString * dirPath = [documentDirectory stringByAppendingPathComponent:@"cover2"];
+                NSString * dirPath = [documentDirectory stringByAppendingPathComponent:@"cover"];
                 NSFileManager *fileManager = [NSFileManager defaultManager];
                 NSLog(@"the delete file name is %@",coverName);
                 NSString * filePath = [dirPath stringByAppendingPathComponent:coverName];
@@ -1298,7 +1298,7 @@ static NSString *backstr = @"-1";//记录返回compid
 - (NSString *)getcoverimagepath:(NSString *)name
 {
     NSString * docsDir = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex:0];
-    NSString * dirPath = [docsDir stringByAppendingPathComponent:@"cover2"];
+    NSString * dirPath = [docsDir stringByAppendingPathComponent:@"cover"];
     
     NSFileManager *fileManager = [NSFileManager defaultManager];
     NSError * error;

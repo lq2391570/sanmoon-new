@@ -561,10 +561,25 @@ NSLog(@"self.data_updata==%@",self.data_updata);
                 project.compId = [dict objectForKey:@"compId"];
                 NSLog(@"--%@",project.name);
                 [self insertProjectDB:project];
-                [self createDirectoryPath:@"cover1" withName:project.name];
+                [self createDirectoryPath:@"cover" withName:project.name];
                 [self deleteBookInfoOfProject:project.name];
                 NSArray *imageArray=[dict objectForKey:@"images"];
                 NSLog(@"%d---",imageArray.count);
+    
+                //下载封面
+                ASIHTTPRequest*rest =  [[DownloadModel sharedDownloadModel]downloadFile:self url:[NSString stringWithFormat:@"%@%@",imageUrl,project.imgUrl] folder:project.name tag:1 fileType:1];
+                
+                if ([project.imgUrl rangeOfString:@"resources/img"].location != NSNotFound ){
+                    [self findeNoDonwloadFile:[DownloadModel getPath:project.name nsurl:[NSString stringWithFormat:@"%@%@",imageUrl,project.imgUrl]]];
+                    
+                    NSString *strOfFile=[DownloadModel getPath:project.name nsurl:[NSString stringWithFormat:@"%@%@",imageUrl,project.imgUrl]];
+                    [_fileArray addObject:strOfFile];
+                }
+                
+                if(rest){
+                    [keyDictRe setObject:rest forKey:[NSString stringWithFormat:@"%@%@",imageUrl,project.imgUrl]];
+                }
+                
                 for (NSDictionary *imageDic in imageArray) {
                     PImageInfo *imgInfo=[[PImageInfo alloc] init];
                     //  imgInfo.type=NULL;
@@ -579,12 +594,10 @@ NSLog(@"self.data_updata==%@",self.data_updata);
                         imgInfo.startY=[[linkDic objectForKey:@"startY"] stringValue];
                         imgInfo.endX=[[linkDic objectForKey:@"endX"] stringValue];
                         imgInfo.endY=[[linkDic objectForKey:@"endY"] stringValue];
-                        [self insertPImageBookInfo:imgInfo];
                         
                     }
+                    [self insertPImageBookInfo:imgInfo];
                     
-//                    [self insertPImageBookInfo:imgInfo];
-                    [self createDirectoryPath:@"ephoto" withName:imgInfo.bookVersion];
                     if ([imgInfo.imgUrl rangeOfString:@"resources/images"].location != NSNotFound ) {
                         
                         NSArray * array = [imgInfo.imgUrl componentsSeparatedByString:@"resources/images/"];
@@ -592,7 +605,7 @@ NSLog(@"self.data_updata==%@",self.data_updata);
                         
                         ASIHTTPRequest*rest =  [[DownloadModel sharedDownloadModel]downloadFile:self url:[NSString stringWithFormat:@"%@%@",imageUrl,imgInfo.imgUrl] folder:imgInfo.bookVersion tag:1 fileType:1];
                         
-                       [self findeNoDonwloadFile:[DownloadModel getPath:imgInfo.bookVersion nsurl:[NSString stringWithFormat:@"%@%@",imageUrl,imgInfo.imgUrl]]];
+                        [self findeNoDonwloadFile:[DownloadModel getPath:imgInfo.bookVersion nsurl:[NSString stringWithFormat:@"%@%@",imageUrl,imgInfo.imgUrl]]];
                         
                         NSString *strOfFile=[DownloadModel getPath:imgInfo.bookVersion nsurl:[NSString stringWithFormat:@"%@%@",imageUrl,imgInfo.imgUrl]];
                         [_fileArray addObject:strOfFile];
@@ -600,18 +613,12 @@ NSLog(@"self.data_updata==%@",self.data_updata);
                         if(rest){
                             [keyDictRe setObject:rest forKey:[NSString stringWithFormat:@"%@%@",imageUrl,imgInfo.imgUrl]];
                         }
-                        
-                        //                        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                        //                            [self download:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",imageUrl,imgInfo.imgUrl]] path:[NSString stringWithFormat:@"Library/Caches/ephoto/%@/%@",imgInfo.bookVersion,fileName]];
-                        //                            NSLog(@"==%@",[NSString stringWithFormat:@"Library/Caches/ephoto/%@/%@",imgInfo.name,fileName]);
-                        //                        });
-                        
                     }
                 }
                 
                 
             }
-
+            
 #pragma mark 高端仪器
                 if ([highbookInfo.type integerValue]==2) {
                 highbookInfo.ID = [dict objectForKey:@"id"];
@@ -621,20 +628,24 @@ NSLog(@"self.data_updata==%@",self.data_updata);
                 highbookInfo.compId = [dict objectForKey:@"compId"];
                 NSLog(@"--%@",highbookInfo.name);
                 [self insertHighDB:highbookInfo];
-                [self createDirectoryPath:@"cover2" withName:highbookInfo.name];
-                //                if ([highbookInfo.imgUrl rangeOfString:@"resources/img"].location != NSNotFound ) {
-                //
-                //                    NSArray * array = [highbookInfo.imgUrl componentsSeparatedByString:@"resources/img/"];
-                //                    NSString *fileName = [array objectAtIndex:1];
-                //
-                //                    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                //                        [self download:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",imageUrl,highbookInfo.imgUrl]] path:[NSString stringWithFormat:@"Library/Caches/cover2/%@/%@",highbookInfo.name,fileName]];
-                //                        NSLog(@"==%@",[NSString stringWithFormat:@"Library/Caches/cover2/%@/%@",highbookInfo.name,fileName]);
-                //                    });
-                //                }
-                
-                
+                [self createDirectoryPath:@"cover" withName:highbookInfo.name];
                 [self deleteBookInfo:highbookInfo.name];
+                    
+                    //下载封面
+                    ASIHTTPRequest*rest =  [[DownloadModel sharedDownloadModel]downloadFile:self url:[NSString stringWithFormat:@"%@%@",imageUrl,highbookInfo.imgUrl] folder:highbookInfo.name tag:1 fileType:1];
+                    
+                    if ([highbookInfo.imgUrl rangeOfString:@"resources/img"].location != NSNotFound ){
+                        [self findeNoDonwloadFile:[DownloadModel getPath:highbookInfo.name nsurl:[NSString stringWithFormat:@"%@%@",imageUrl,highbookInfo.imgUrl]]];
+                        
+                        NSString *strOfFile=[DownloadModel getPath:highbookInfo.name nsurl:[NSString stringWithFormat:@"%@%@",imageUrl,highbookInfo.imgUrl]];
+                        [_fileArray addObject:strOfFile];
+                    }
+                    
+                    if(rest){
+                        [keyDictRe setObject:rest forKey:[NSString stringWithFormat:@"%@%@",imageUrl,highbookInfo.imgUrl]];
+                    }
+                    
+                    
                 NSArray *imageArray=[dict objectForKey:@"images"];
                 NSLog(@"%d---",imageArray.count);
                 for (NSDictionary *imageDic in imageArray) {
@@ -649,7 +660,7 @@ NSLog(@"self.data_updata==%@",self.data_updata);
                         imgInfo.startY=[[linkDic objectForKey:@"startY"] stringValue];
                         imgInfo.endX=[[linkDic objectForKey:@"endX"] stringValue];
                         imgInfo.endY=[[linkDic objectForKey:@"endY"] stringValue];
-                        [self insertHighBookInfo:imgInfo];
+                       
                     }
                     [self insertHighBookInfo:imgInfo];
                     
@@ -703,16 +714,22 @@ NSLog(@"self.data_updata==%@",self.data_updata);
                 mationInfo.name=[dict objectForKey:@"name"];
                 mationInfo.compId=[dict objectForKey:@"compId"];
                 [self insertCompInDB2:mationInfo];
-                [self createDirectoryPath:@"informationCover" withName:mationInfo.name];
-//            if ([mationInfo.imgUrl rangeOfString:@"resources/img"].location!=NSNotFound) {
-//                NSArray * array = [mationInfo.imgUrl componentsSeparatedByString:@"resources/img/"];
-//                NSString *fileName = [array objectAtIndex:1];
-//                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-//                    [self download:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",imageUrl,mationInfo.imgUrl]] path:[NSString stringWithFormat:@"Library/Caches/informationCover/%@/%@",mationInfo.name,fileName]];
-//                    NSLog(@"==%@",[NSString stringWithFormat:@"Library/Caches/informationCover/%@/%@",mationInfo.name,fileName]);
-//                });
-//            }
-            
+                [self createDirectoryPath:@"cover" withName:mationInfo.name];
+                
+                //下载封面
+                ASIHTTPRequest*rest =  [[DownloadModel sharedDownloadModel]downloadFile:self url:[NSString stringWithFormat:@"%@%@",imageUrl,mationInfo.imgUrl] folder:mationInfo.name tag:1 fileType:1];
+                
+                if ([mationInfo.imgUrl rangeOfString:@"resources/img"].location != NSNotFound ){
+                    [self findeNoDonwloadFile:[DownloadModel getPath:mationInfo.bookVersion nsurl:[NSString stringWithFormat:@"%@%@",imageUrl,mationInfo.imgUrl]]];
+                    
+                    NSString *strOfFile=[DownloadModel getPath:mationInfo.bookVersion nsurl:[NSString stringWithFormat:@"%@%@",imageUrl,mationInfo.imgUrl]];
+                    [_fileArray addObject:strOfFile];
+                }
+                
+                if(rest){
+                    [keyDictRe setObject:rest forKey:[NSString stringWithFormat:@"%@%@",imageUrl,mationInfo.imgUrl]];
+                }
+                
             [self deleteBookInfoOfInformation:mationInfo.name];
              NSArray *imageArray=[dict objectForKey:@"images"];
             for (NSDictionary *imageDic in imageArray) {
@@ -728,9 +745,9 @@ NSLog(@"self.data_updata==%@",self.data_updata);
                     imgInfo.startY=[[linkDic objectForKey:@"startY"] stringValue];
                     imgInfo.endX=[[linkDic objectForKey:@"endX"] stringValue];
                     imgInfo.endY=[[linkDic objectForKey:@"endY"] stringValue];
-                    [self insertBookInfo2:imgInfo];
+                  
                 }
-//                [self insertBookInfo2:imgInfo];
+                [self insertBookInfo2:imgInfo];
                 [self createDirectoryPath:@"ephoto" withName:imgInfo.bookVersion];
                 if ([imgInfo.imgUrl rangeOfString:@"resources/images"].location != NSNotFound ) {
                     
@@ -748,8 +765,25 @@ NSLog(@"self.data_updata==%@",self.data_updata);
                         [keyDictRe setObject:rest forKey:[NSString stringWithFormat:@"%@%@",imageUrl,imgInfo.imgUrl]];
                     }
                    
+                }
+                
+                if ([imgInfo.imgUrl rangeOfString:@"resources/videos"].location != NSNotFound ) {
+                    
+        
+                    ASIHTTPRequest*rest =  [[DownloadModel sharedDownloadModel]downloadFile:self url:[NSString stringWithFormat:@"%@%@",imageUrl,imgInfo.imgUrl] folder:imgInfo.bookVersion tag:1 fileType:1];
+                    
+                    [self findeNoDonwloadFile:[DownloadModel getPath:imgInfo.bookVersion nsurl:[NSString stringWithFormat:@"%@%@",imageUrl,imgInfo.imgUrl]]];
+                    NSString *strOfFile=[DownloadModel getPath:imgInfo.bookVersion nsurl:[NSString stringWithFormat:@"%@%@",imageUrl,imgInfo.imgUrl]];
+                    [_fileArray addObject:strOfFile];
+                    
+                    
+                    if(rest){
+                        [keyDictRe setObject:rest forKey:[NSString stringWithFormat:@"%@%@",imageUrl,imgInfo.imgUrl]];
+                    }
                     
                 }
+                
+                
             
             }
         }
@@ -764,20 +798,21 @@ NSLog(@"self.data_updata==%@",self.data_updata);
                 NSLog(@"--%@",bookInfo.name);
                 [self insertCompInDB:bookInfo];
                 [self createDirectoryPath:@"cover" withName:bookInfo.name];
-                
-//                if ([bookInfo.imgUrl rangeOfString:@"resources/img"].location != NSNotFound ) {
-//                    
-//                    NSArray * array = [bookInfo.imgUrl componentsSeparatedByString:@"resources/img/"];
-//                    NSString *fileName = [array objectAtIndex:1];
-//                
-//        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-//            [self download:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",imageUrl,bookInfo.imgUrl]] path:[NSString stringWithFormat:@"Library/Caches/cover/%@/%@",bookInfo.name,fileName]];
-//        NSLog(@"==%@",[NSString stringWithFormat:@"Library/Caches/cover/%@/%@",bookInfo.name,fileName]);
-//        });
-//         
-//                }
-                
                 [self deleteBookInfoOfEBook:bookInfo.name];
+                //下载封面
+                ASIHTTPRequest*rest =  [[DownloadModel sharedDownloadModel]downloadFile:self url:[NSString stringWithFormat:@"%@%@",imageUrl,bookInfo.imgUrl] folder:bookInfo.name tag:1 fileType:1];
+                
+                if ([bookInfo.imgUrl rangeOfString:@"resources/img"].location != NSNotFound ){
+                    [self findeNoDonwloadFile:[DownloadModel getPath:bookInfo.bookVersion nsurl:[NSString stringWithFormat:@"%@%@",imageUrl,bookInfo.imgUrl]]];
+                    
+                    NSString *strOfFile=[DownloadModel getPath:bookInfo.bookVersion nsurl:[NSString stringWithFormat:@"%@%@",imageUrl,bookInfo.imgUrl]];
+                    [_fileArray addObject:strOfFile];
+                }
+                
+                if(rest){
+                    [keyDictRe setObject:rest forKey:[NSString stringWithFormat:@"%@%@",imageUrl,bookInfo.imgUrl]];
+                }
+                
               NSArray *imageArray=[dict objectForKey:@"images"];
                 NSLog(@"huaceImageArray = %@---",imageArray);
                 for (NSDictionary *imageDic in imageArray) {
@@ -794,9 +829,9 @@ NSLog(@"self.data_updata==%@",self.data_updata);
                         imgInfo.startY=[[linkDic objectForKey:@"startY"] stringValue];
                         imgInfo.endX=[[linkDic objectForKey:@"endX"] stringValue];
                         imgInfo.endY=[[linkDic objectForKey:@"endY"] stringValue];
-                        [self insertBookInfo:imgInfo];
+                     
                     }
-//                    [self insertBookInfo:imgInfo];
+                    [self insertBookInfo:imgInfo];
                     [self createDirectoryPath:@"ephoto" withName:imgInfo.bookVersion];
                     if ([imgInfo.imgUrl rangeOfString:@"resources/images"].location != NSNotFound ) {
                         
@@ -913,15 +948,15 @@ NSLog(@"self.data_updata==%@",self.data_updata);
                 
                 
                 [self insertHighDB:highbookInfo];
-                [self createDirectoryPath:@"cover2" withName:highbookInfo.name];
+                [self createDirectoryPath:@"cover" withName:highbookInfo.name];
 //                if ([highbookInfo.imgUrl rangeOfString:@"resources/img"].location != NSNotFound ) {
 //                    
 //                    NSArray * array = [highbookInfo.imgUrl componentsSeparatedByString:@"resources/img/"];
 //                    NSString *fileName = [array objectAtIndex:1];
 //                    
 //                    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-//                        [self download:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",imageUrl,highbookInfo.imgUrl]] path:[NSString stringWithFormat:@"Library/Caches/cover2/%@/%@",highbookInfo.name,fileName]];
-//                        NSLog(@"==%@",[NSString stringWithFormat:@"Library/Caches/cover2/%@/%@",highbookInfo.name,fileName]);
+//                        [self download:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",imageUrl,highbookInfo.imgUrl]] path:[NSString stringWithFormat:@"Library/Caches/cover/%@/%@",highbookInfo.name,fileName]];
+//                        NSLog(@"==%@",[NSString stringWithFormat:@"Library/Caches/cover/%@/%@",highbookInfo.name,fileName]);
 //                    });
 //                    
 //                }
@@ -1011,15 +1046,15 @@ NSLog(@"self.data_updata==%@",self.data_updata);
                 project.compId = [dict objectForKey:@"compId"];
                 NSLog(@"--%@",project.name);
                 [self insertProjectDB:project];
-                [self createDirectoryPath:@"cover1" withName:project.name];
+                [self createDirectoryPath:@"cover" withName:project.name];
 //                if ([project.imgUrl rangeOfString:@"resources/img"].location != NSNotFound ) {
 //                    
 //                    NSArray * array = [project.imgUrl componentsSeparatedByString:@"resources/img/"];
 //                    NSString *fileName = [array objectAtIndex:1];
 //                    
 //                    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-//                        [self download:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",imageUrl,project.imgUrl]] path:[NSString stringWithFormat:@"Library/Caches/cover1/%@/%@",project.name,fileName]];
-//                        NSLog(@"==%@",[NSString stringWithFormat:@"Library/Caches/cover1/%@/%@",project.name,fileName]);
+//                        [self download:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",imageUrl,project.imgUrl]] path:[NSString stringWithFormat:@"Library/Caches/cover/%@/%@",project.name,fileName]];
+//                        NSLog(@"==%@",[NSString stringWithFormat:@"Library/Caches/cover/%@/%@",project.name,fileName]);
 //                    });
 //                    
 //                }
@@ -1189,12 +1224,12 @@ NSLog(@"self.data_updata==%@",self.data_updata);
     [request setCompletionBlock:^{
         
         NSDictionary *dic=[NSJSONSerialization JSONObjectWithData:request.responseData   options:NSJSONReadingMutableContainers error:nil];
-     //   NSLog(@"%@",dic);
+//        NSLog(@"dataDic=%@",dic);
         
         NSString *message=[dic objectForKey:@"message"] ;
-        NSLog(@"%@",message);
+        NSLog(@"allData=%@",message);
         NSArray *dataArray=[dic objectForKey:@"data"] ;
-        
+//        NSLog(@"dataArray = %@",dataArray);
             if (dataArray) {
                 complete(dataArray);
             }
