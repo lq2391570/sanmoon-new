@@ -2464,17 +2464,17 @@ NSLog(@"self.data_updata==%@",self.data_updata);
             }
             NSString * uid = [self getStoresID];
 #pragma mark rebuilding
-//            if ([usidArray containsObject:uid] == NO) {
-//                UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"" message:@"不是该门店的客户，禁止查询" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
-//                [alert show];
-//                if (queryFlag == 0) {
-//                    searcktextField.text=@"";
-//                }else{
-//                    searcktextField.text = @"";
-//                }
-//                [SVProgressHUD dismiss];
-//                return;
-//            }
+            if ([usidArray containsObject:uid] == NO) {
+                UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"" message:@"不是该门店的客户，禁止查询" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+                [alert show];
+                if (queryFlag == 0) {
+                    searcktextField.text=@"";
+                }else{
+                    searcktextField.text = @"";
+                }
+                [SVProgressHUD dismiss];
+                return;
+            }
             for (GusetListData * customer in tempArray) {
                 
                 NSString * cardState = customer.gueststate;
@@ -2545,17 +2545,17 @@ NSLog(@"self.data_updata==%@",self.data_updata);
         [usidArray addObject:listData.usid];
     }
     #pragma mark rebuilding
-//    if ([usidArray containsObject:uid] == NO) {
-//        UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"" message:@"不是该门店的客户，禁止查询" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
-//        [alert show];
-//        if (queryFlag == 0) {
-//            searcktextField.text=@"";
-//        }else{
-//            searcktextField.text = @"";
-//        }
-//        [SVProgressHUD dismiss];
-//        return;
-//    }
+    if ([usidArray containsObject:uid] == NO) {
+        UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"" message:@"不是该门店的客户，禁止查询" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+        [alert show];
+        if (queryFlag == 0) {
+            searcktextField.text=@"";
+        }else{
+            searcktextField.text = @"";
+        }
+        [SVProgressHUD dismiss];
+        return;
+    }
     
     //   if ([cardState isEqualToString:@"1"]) {
     //   searcktextField.text=@"";

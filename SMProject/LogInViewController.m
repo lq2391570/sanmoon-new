@@ -116,27 +116,27 @@
     logView.center = CGPointMake(self.view.center.x+155+100, 300-50);
     [self.view addSubview:logView];
     
-    self.nameTextfield                 = [[UITextField alloc] initWithFrame:CGRectMake(0, 0, 320, 40)];
-    self.nameTextfield.center          = CGPointMake(self.view.center.x+155+100, 300);
-    self.nameTextfield.returnKeyType   = UIReturnKeyNext;
-    self.nameTextfield.delegate        = self;
-    self.nameTextfield.placeholder     = @"连锁机构代码";
-     #pragma mark 临时填充1
-//    self.nameTextfield.text = @"C01001";
-    self.nameTextfield.keyboardType    = UIKeyboardTypeNumberPad;
-    self.nameTextfield.clearButtonMode = UITextFieldViewModeWhileEditing;
-    self.nameTextfield.backgroundColor = [UIColor whiteColor];
-    self.nameTextfield.delegate=self;
-//    [self.nameTextfield addTarget:self action:@selector(slideFrameUp) forControlEvents:UIControlEventEditingDidBegin];
-//    [self.nameTextfield addTarget:self action:@selector(slideFrameDown) forControlEvents:UIControlEventEditingDidEnd];
-    
-    [self.view addSubview:self.nameTextfield];
+//    self.nameTextfield                 = [[UITextField alloc] initWithFrame:CGRectMake(0, 0, 320, 40)];
+//    self.nameTextfield.center          = CGPointMake(self.view.center.x+155+100, 300);
+//    self.nameTextfield.returnKeyType   = UIReturnKeyNext;
+//    self.nameTextfield.delegate        = self;
+//    self.nameTextfield.placeholder     = @"连锁机构代码";
+//     #pragma mark 临时填充1
+////    self.nameTextfield.text = @"C01001";
+//    self.nameTextfield.keyboardType    = UIKeyboardTypeNumberPad;
+//    self.nameTextfield.clearButtonMode = UITextFieldViewModeWhileEditing;
+//    self.nameTextfield.backgroundColor = [UIColor whiteColor];
+//    self.nameTextfield.delegate=self;
+////    [self.nameTextfield addTarget:self action:@selector(slideFrameUp) forControlEvents:UIControlEventEditingDidBegin];
+////    [self.nameTextfield addTarget:self action:@selector(slideFrameDown) forControlEvents:UIControlEventEditingDidEnd];
+//
+//    [self.view addSubview:self.nameTextfield];
     
     self.UserNameTextField                 = [[UITextField alloc] initWithFrame:CGRectMake(0, 0, 320, 40)];
-    self.UserNameTextField.center          = CGPointMake(self.view.center.x+155+100, 360);
+    self.UserNameTextField.center          = CGPointMake(self.view.center.x+155+100, 330);
     self.UserNameTextField.returnKeyType   = UIReturnKeyNext;
     self.UserNameTextField.delegate        = self;
-    self.UserNameTextField.placeholder     = @"管理人员代码";
+    self.UserNameTextField.placeholder     = @"账号";
     #pragma mark 临时填充2
 //    self.UserNameTextField.text = @"99";
     self.UserNameTextField.clearButtonMode = UITextFieldViewModeWhileEditing;
@@ -150,9 +150,9 @@
     
     
     self.password                 = [[UITextField alloc] initWithFrame:CGRectMake(0, 0, 320, 40)];
-    self.password.center          = CGPointMake(self.view.center.x+155+100, 420);
+    self.password.center          = CGPointMake(self.view.center.x+155+100, 390);
     self.password.delegate        = self;
-    self.password.placeholder     = @"登录口令";
+    self.password.placeholder     = @"密码";
     #pragma mark 临时填充3
 //    self.password.text = @"flydna";
     self.password.clearButtonMode = UITextFieldViewModeWhileEditing;
@@ -295,115 +295,93 @@
   
     [SVProgressHUD showWithStatus:@"正在登录" maskType:SVProgressHUDMaskTypeClear];
     [self performSelector:@selector(timeOut) withObject:nil afterDelay:15];
-    NSString *name     = self.nameTextfield.text;
+//    NSString *name     = self.nameTextfield.text;
     NSString *passWord = self.password.text;
     NSString *user     = self.UserNameTextField.text;
     
-    if ([name isEqualToString:@""] || [passWord isEqualToString:@""] || [user isEqualToString:@""]) {
-        UIAlertView *alter = [[UIAlertView alloc] initWithTitle:@"提示" message:@"门店编号用户名和密码不能为空" delegate:self cancelButtonTitle:@"知道了" otherButtonTitles:nil, nil];
+    if ([passWord isEqualToString:@""] || [user isEqualToString:@""]) {
+        UIAlertView *alter = [[UIAlertView alloc] initWithTitle:@"提示" message:@"用户名或密码不能为空" delegate:self cancelButtonTitle:@"知道了" otherButtonTitles:nil, nil];
         [alter show];
          [SVProgressHUD dismiss];
-    }
-//    if (![name isEqualToString:@""] && ![passWord isEqualToString:@""]) {
-//        [self.delegate changeRootViewController];
-//        [self saveStoresID];
-//        [ProgressHUD showSuccess:@"登陆成功！"];
-//    }
-//    [self.delegate changeRootViewController];
-//               [self saveStoresID];
-//            [ProgressHUD showSuccess:@"登陆成功！"];
-    [self getStoreNum:^(NSArray *array) {
-        NSDictionary *dic=[array objectAtIndex:0];
-        NSDictionary *dict2=[dic objectForKey:@"data"];
-        self.shopCode=[dict2 objectForKey:@"shopCode"];
-        self.ipadStatus=[dic objectForKey:@"status"];
-        self.myIpadName=[dict2 objectForKey:@"name"];
-        NSLog(@"name=%@,self.shopCode=%@",name,self.shopCode);
-        self.data_updata=[dict2 objectForKey:@"data_update"];
-
-#pragma mark 修改
-        //self.ipadStatus = [NSNumber numberWithInt:2];
-    if ([self.ipadStatus isEqualToNumber:[NSNumber numberWithInteger:2]]) {
-        NSLog(@"ipad验证成功！");
-        if ([name isEqualToString:self.shopCode] ) {
-            NSLog(@"门店验证成功");
-            NSLog(@"%@",self.ipadStatus);
-            NSLog(@"%@",self.shopCode);
-//            NSLog(@"%@",[self getGuestInfo:name withUsername:user withPwd:passWord withCompleteBlock:^(NSString *jgCodeStr) {
-//                <#code#>
-//            }]);
-            [self getGuestInfo:name withUsername:user withPwd:passWord withCompleteBlock:^(NSString *jgCodeStr) {
-                if (!EMPTYSTR(jgCodeStr)) {
-                    NSLog(@"jgCodeStr=%@",jgCodeStr);
-                    [self.delegate changeRootViewController];
-                    [self saveStoresID];
-                    [self saveUsid:jgCodeStr];
-                    
-                    dispatch_time_t delayTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC));
-                    dispatch_after(delayTime, dispatch_get_main_queue(), ^{
-                        [SVProgressHUD showSuccessWithStatus:@"登陆成功"];
-                    });
-                }else{
-                     [SVProgressHUD showInfoWithStatus:@"用户名或密码错误！"];
-                }
-            }];
-            
-//            if ([[self getGuestInfo:name withUsername:user withPwd:passWord] isEqualToString:@"T"]) {
-//                [self.delegate changeRootViewController];
-//                [self saveStoresID];
-//
-//                dispatch_time_t delayTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC));
-//                dispatch_after(delayTime, dispatch_get_main_queue(), ^{
-//                    [SVProgressHUD showSuccessWithStatus:@"登陆成功"];
-//                });
-//            }else{
-//                [SVProgressHUD showInfoWithStatus:@"用户名或密码错误！"];
-//              //  [SVProgressHUD dismiss];
-//            }
-
-        }else{
-            UIAlertView *alert=[[UIAlertView alloc] initWithTitle:@"提示" message:@"该设备未在此门店下注册" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
-            [alert show];
-            [SVProgressHUD dismiss];
-            
-        }
-
-            
-       
-    }else if([self.ipadStatus isEqualToNumber:[NSNumber numberWithInteger:-1]]){
-#pragma mark rebuilding
-        [self.delegate changeRootViewController];
-        UIAlertView *alert=[[UIAlertView alloc] initWithTitle:@"提示" message:@"该设备未激活" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
-        [alert show];
-#pragma mark 模拟器调试
-//        [self.delegate changeRootViewController];
-         [SVProgressHUD dismiss];
-        
-    }else if ([self.ipadStatus isEqualToNumber:[NSNumber numberWithInteger:0]]){
-        UIAlertView *alert=[[UIAlertView alloc] initWithTitle:@"提示" message:@"该设备不可用" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
-        [alert show];
-         [SVProgressHUD dismiss];
-    }else if ([self.ipadStatus isEqualToNumber:[NSNumber numberWithInteger:1]]){
-        UIAlertView *alert=[[UIAlertView alloc] initWithTitle:@"提示" message:@"该设备未审核" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
-        [alert show];
-         [SVProgressHUD dismiss];
-    }else if ([self.ipadStatus isEqualToNumber:[NSNumber numberWithInteger:3]]){
-        UIAlertView *alert=[[UIAlertView alloc] initWithTitle:@"提示" message:@"该设备审核未通过" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
-        [alert show];
-         [SVProgressHUD dismiss];
+        return;
     }
     
-      }];
+    [self getGuestInfoUsername:user withPwd:passWord withCompleteBlock:^(NSString *jgCodeStr) {
+        if (!EMPTYSTR(jgCodeStr)) {
+            NSLog(@"jgCodeStr=%@",jgCodeStr);
+            
+            [self getStoreNum:^(NSArray *array) {
+                NSDictionary *dic=[array objectAtIndex:0];
+                NSDictionary *dict2=[dic objectForKey:@"data"];
+                self.shopCode=[dict2 objectForKey:@"shopCode"];
+                self.ipadStatus=[dic objectForKey:@"status"];
+                self.myIpadName=[dict2 objectForKey:@"name"];
+                NSLog(@"self.shopCode=%@",self.shopCode);
+                self.data_updata=[dict2 objectForKey:@"data_update"];
+                
+#pragma mark 修改
+                //self.ipadStatus = [NSNumber numberWithInt:2];
+                if ([self.ipadStatus isEqualToNumber:[NSNumber numberWithInteger:2]]) {
+                    NSLog(@"ipad验证成功！");
+                    if ([jgCodeStr isEqualToString:self.shopCode] ) {
+                        NSLog(@"门店验证成功");
+                        NSLog(@"%@",self.ipadStatus);
+                        NSLog(@"%@",self.shopCode);
+                        
+                        [self.delegate changeRootViewController];
+                        [self saveStoresID];
+                        [self saveUsid:jgCodeStr];
+                        
+                        dispatch_time_t delayTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC));
+                        dispatch_after(delayTime, dispatch_get_main_queue(), ^{
+                            [SVProgressHUD showSuccessWithStatus:@"登陆成功"];
+                        });
+                        
+                    }else{
+                        UIAlertView *alert=[[UIAlertView alloc] initWithTitle:@"提示" message:@"该设备未在此门店下注册" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+                        [alert show];
+                        [SVProgressHUD dismiss];
+                        
+                    }
+                }else if([self.ipadStatus isEqualToNumber:[NSNumber numberWithInteger:-1]]){
+#pragma mark rebuilding
+                    //        [self.delegate changeRootViewController];
+                    UIAlertView *alert=[[UIAlertView alloc] initWithTitle:@"提示" message:@"该设备未激活" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+                    [alert show];
+#pragma mark 模拟器调试
+                    //        [self.delegate changeRootViewController];
+                    [SVProgressHUD dismiss];
+                    
+                }else if ([self.ipadStatus isEqualToNumber:[NSNumber numberWithInteger:0]]){
+                    UIAlertView *alert=[[UIAlertView alloc] initWithTitle:@"提示" message:@"该设备不可用" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+                    [alert show];
+                    [SVProgressHUD dismiss];
+                }else if ([self.ipadStatus isEqualToNumber:[NSNumber numberWithInteger:1]]){
+                    UIAlertView *alert=[[UIAlertView alloc] initWithTitle:@"提示" message:@"该设备未审核" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+                    [alert show];
+                    [SVProgressHUD dismiss];
+                }else if ([self.ipadStatus isEqualToNumber:[NSNumber numberWithInteger:3]]){
+                    UIAlertView *alert=[[UIAlertView alloc] initWithTitle:@"提示" message:@"该设备审核未通过" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+                    [alert show];
+                    [SVProgressHUD dismiss];
+                }
+                
+            }];
+            
+        }else{
+            [SVProgressHUD showInfoWithStatus:@"用户名或密码错误！"];
+        }
+    }];
+    
+    
+
+    
     if ([self isConnectionAvailable]==NO) {
         UIAlertView *alert=[[UIAlertView alloc] initWithTitle:@"提示" message:@"请检查网络" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
         [alert show];
         [SVProgressHUD dismiss];
     }
 
-//    [UIView beginAnimations:nil context:nil];
-//    [UIView setAnimationDuration:0.3];
-//    self.view.frame = CGRectMake(0, 0, 1024, 768);
-//    [UIView commitAnimations];
 
     [self.nameTextfield resignFirstResponder];
     [self.password resignFirstResponder];
@@ -416,7 +394,7 @@
    //  [ProgressHUD showSuccess:@"登陆失败！"];
    // [SVProgressHUD dismiss];
 }
-- (void)getGuestInfo:(NSString *)no withUsername:(NSString *)username withPwd:(NSString *)pwd withCompleteBlock:(void (^) (NSString *jgCodeStr))complete
+- (void)getGuestInfoUsername:(NSString *)username withPwd:(NSString *)pwd withCompleteBlock:(void (^) (NSString *jgCodeStr))complete
 {
     
 //    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@GetData.asmx/GetMembert",RIP]];
