@@ -12,5 +12,8 @@
 
 @property (nonatomic,retain) IBOutlet UILabel * cardLab;
 @property (nonatomic,retain) IBOutlet UILabel * nameLab;
+@property (strong, nonatomic) IBOutlet UILabel *phoneNumLabel;
+
+
 
 @end

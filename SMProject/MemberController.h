@@ -29,7 +29,7 @@
 @property (nonatomic,retain) IBOutlet UILabel * gkNO;
 //卡状态
 @property (nonatomic,strong)NSString *cardState;
-
+@property (nonatomic,strong)NSString *phoneNum;
 
 @property (nonatomic, retain) IBOutlet UILabel * ahText;
 @property (nonatomic, retain) IBOutlet UILabel * gmsText;

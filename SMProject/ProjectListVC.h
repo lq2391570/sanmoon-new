@@ -19,7 +19,7 @@
 @property (strong, nonatomic) IBOutlet UITableView *tableView;
 
 @property (strong, nonatomic) IBOutlet UIButton *returnBtn;
-//会员卡号
+//会员号
 @property (nonatomic,strong) NSString *gid;
 //会员姓名
 @property (nonatomic,strong) NSString *uname;

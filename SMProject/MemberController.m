@@ -74,7 +74,7 @@
             self.jdTime.text = info.jdsj;
             self.zjTime.text = info.lasttime;
             self.gkNO.text = info.gid;
-            self.cardNO.text = self.query;
+            self.cardNO.text = self.phoneNum;
             self.ahText.text = info.gfancy;
             self.gmsText.text = info.sfgm;
             self.remarkText.text = info.grequest;
@@ -229,7 +229,7 @@
 - (void)projectListBtnClick
 {
     ProjectListVC *vc = [[ProjectListVC alloc] init];
-    vc.gid = self.cardNO.text;
+    vc.gid = self.query;
     vc.uname = self.name.text;
     [self.navigationController pushViewController:vc animated:YES];
     

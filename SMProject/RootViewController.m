@@ -2118,7 +2118,7 @@ NSLog(@"self.data_updata==%@",self.data_updata);
     
     searcktextField.clearButtonMode = UITextFieldViewModeWhileEditing;
    // searcktextField.text = @"O";
-    searcktextField.placeholder = @"请输入手机号或卡号";
+    searcktextField.placeholder = @"请输入手机号或会员号";
 #pragma mark 修改
     searcktextField.keyboardType=UIKeyboardTypeNumberPad;
     [searchView addSubview:searcktextField];
@@ -2199,13 +2199,13 @@ NSLog(@"self.data_updata==%@",self.data_updata);
     
     _cardTextField=[[UITextField alloc] initWithFrame:CGRectMake(320, 11, 370, 43)];
    // _cardTextField.text=@"O";
-    _cardTextField.placeholder = @"请输入手机号或卡号";
+    _cardTextField.placeholder = @"请输入手机号或会员号";
     #pragma mark 临时填充2
 //    _cardTextField.text = @"O0000090670";
     _cardTextField.delegate = self;
     _cardTextField.clearButtonMode = UITextFieldViewModeWhileEditing;
     _cardTextField.keyboardType=UIKeyboardTypeNumberPad;
-  //  cardTextField.placeholder=@"请输入卡号";
+  //  cardTextField.placeholder=@"请输入会员号";
     [_searchView2 addSubview:_cardTextField];
     
      _searchBtn=[UIButton buttonWithType:UIButtonTypeCustom];
@@ -2221,11 +2221,11 @@ NSLog(@"self.data_updata==%@",self.data_updata);
         [SVProgressHUD showInfoWithStatus:@"请输入姓名"];
         return;
     }else if ([_cardTextField.text isEqualToString:@""]){
-        [SVProgressHUD showInfoWithStatus:@"请输入手机号或卡号"];
+        [SVProgressHUD showInfoWithStatus:@"请输入手机号或会员号"];
         return;
     }
     if ([_cardTextField.text containsString:@"G"]) {
-        //卡号
+        //会员号
         [self jingQueSearch];
     }else{
         //手机号
@@ -2277,7 +2277,7 @@ NSLog(@"self.data_updata==%@",self.data_updata);
 //    {
 ////        if ([toBeString length] > 11) {
 ////            textField.text = [toBeString substringToIndex:11];
-////            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:@"超过会员卡号11位，请确认" delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil, nil] ;
+////            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:@"超过会员号11位，请确认" delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil, nil] ;
 ////            [alert show];
 ////            [searcktextField resignFirstResponder];
 ////            [_cardTextField resignFirstResponder];
@@ -2323,7 +2323,7 @@ NSLog(@"self.data_updata==%@",self.data_updata);
         }
         if ([array count] == 0)
         {
-            UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"" message:@"卡号或手机号与姓名不匹配" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+            UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"" message:@"会员号或手机号与姓名不匹配" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
             [alert show];
             [_cardTextField resignFirstResponder];
             [_nameTextField resignFirstResponder];
@@ -2365,7 +2365,7 @@ NSLog(@"self.data_updata==%@",self.data_updata);
             }
             if ([array count] == 0)
             {
-                UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"" message:@"卡号或手机号与姓名不匹配" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+                UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"" message:@"会员号或手机号与姓名不匹配" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
                 [alert show];
                 [_cardTextField resignFirstResponder];
                 [_nameTextField resignFirstResponder];
@@ -2391,6 +2391,14 @@ NSLog(@"self.data_updata==%@",self.data_updata);
     
     
 }
+//判断是否为纯数字
+- (BOOL)isNum:(NSString *)checkedNumString {
+    checkedNumString = [checkedNumString stringByTrimmingCharactersInSet:[NSCharacterSet decimalDigitCharacterSet]];
+    if(checkedNumString.length > 0) {
+        return NO;
+    }
+    return YES;
+}
 
 #pragma mark 修改
 - (void)searchTask
@@ -2407,7 +2415,7 @@ NSLog(@"self.data_updata==%@",self.data_updata);
         }
         
     if (queryFlag == 1) {
-        if ([searcktextField.text containsString:@"G"]) {
+        if ([self isNum:searcktextField.text] == NO) {
             WEAKSELF
             [[XMLmanage shardSingleton] getGuestInfo:searcktextField.text withUsername:@"sanmoon" withPwd:@"sm147369" withCompleteBlock:^(GusetListRootClass *bassClass) {
                 [weakself searchWithPhoneOrGuestId:bassClass.data];
@@ -2450,7 +2458,7 @@ NSLog(@"self.data_updata==%@",self.data_updata);
         NSMutableArray *tempArray = [NSMutableArray arrayWithCapacity:0];
         for (int i = 0; i< array.count; i++) {
             GusetListData * customer = [array objectAtIndex:i];
-            if ([customer.gueststate integerValue] == 2 || [customer.gueststate integerValue] == 3) {
+            if (([customer.gueststate integerValue] == 2 || [customer.gueststate integerValue] == 3) && [customer.usid isEqualToString:[self getStoresID]]) {
                 [tempArray addObject:customer];
             }
         }
@@ -2486,6 +2494,7 @@ NSLog(@"self.data_updata==%@",self.data_updata);
                     MemberController * member  = [[MemberController alloc] init];
                     // member.query = searcktextField.text;
                     member.query = customer.gid;
+                    member.phoneNum = customer.gexpphone;
                     member.delegate=self;
                     member.cardState=cardState;
                     // member.query = @"O0029000150";
@@ -2505,6 +2514,7 @@ NSLog(@"self.data_updata==%@",self.data_updata);
                     MemberController * member  = [[MemberController alloc] init];
                     // member.query = searcktextField.text;
                     member.query = customer.gid;
+                    member.phoneNum = customer.gexpphone;
                     member.delegate=self;
                     member.cardState=cardState;
                     // member.query = @"O0029000150";
@@ -2540,9 +2550,13 @@ NSLog(@"self.data_updata==%@",self.data_updata);
     //            NSString * cardState = customer.cardstate;
     NSString * uid = [self getStoresID];
     NSLog(@"uid = %@",uid);
+    //如果存在补卡状态则过滤掉2020.7.2////////////////
+    //客户状态01.空账户；02.正常账户；03.余零账户；04.冻结账户；05.新客账户
     NSMutableArray *usidArray = [NSMutableArray arrayWithCapacity:0];
     for (GusetListData *listData in array) {
-        [usidArray addObject:listData.usid];
+        if (([listData.gueststate integerValue] == 2 || [listData.gueststate integerValue] == 3) && [listData.usid isEqualToString:[self getStoresID]]) {
+            [usidArray addObject:listData.usid];
+        }
     }
     #pragma mark rebuilding
     if ([usidArray containsObject:uid] == NO) {
@@ -2618,7 +2632,7 @@ NSLog(@"self.data_updata==%@",self.data_updata);
         [mybutton1 setImage:[UIImage imageNamed:@"建档按钮_111_08.png"] forState:UIControlStateNormal];
         [mybutton2 setImage:[UIImage imageNamed:@"号码查询_选中.png"] forState:UIControlStateNormal];
         searcktextField.text=@"";
-        searcktextField.placeholder = @"请输入手机号或卡号";
+        searcktextField.placeholder = @"请输入手机号或会员号";
         searcktextField.keyboardType=UIKeyboardTypeNumberPad;
        [searcktextField endEditing:YES];
     }
@@ -2844,9 +2858,9 @@ NSLog(@"self.data_updata==%@",self.data_updata);
     [UIView beginAnimations:nil context:nil];
     [UIView setAnimationCurve:UIViewAnimationCurveEaseIn];
     [UIView setAnimationDuration:10.f];
-     searcktextField.placeholder = @"请输入手机号或卡号";
+     searcktextField.placeholder = @"请输入手机号或会员号";
     if (_swichBtn.selected==YES) {
-        searcktextField.placeholder = @"请输入手机号或卡号";
+        searcktextField.placeholder = @"请输入手机号或会员号";
     }
    
 //    mybutton1.hidden=YES;

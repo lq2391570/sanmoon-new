@@ -37,7 +37,7 @@
     self.isOpenArray = [NSMutableArray arrayWithCapacity:0];
 //    [self getProjectList:self.gid];
     self.nameLabel.text = [NSString stringWithFormat:@"会员姓名:%@",self.uname];
-    self.cardNumlabel.text = [NSString stringWithFormat:@"会员卡号:%@",self.gid];
+    self.cardNumlabel.text = [NSString stringWithFormat:@"会员号:%@",self.gid];
     [self getProjectListNew:self.gid];
     //初始化二维数组
     self.twoDimensionArray = [NSMutableArray arrayWithCapacity:0];

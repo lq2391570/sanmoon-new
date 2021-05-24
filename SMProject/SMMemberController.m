@@ -55,7 +55,7 @@
 - (IBAction)loginBtnClicked:(id)sender
 {
     if (self.userNameTextField.text.length == 0 || self.pwdTextField.text.length == 0) {
-        [SGInfoAlert showInfo:@"会员卡号或密码不能为空！"
+        [SGInfoAlert showInfo:@"会员号或密码不能为空！"
                       bgColor:[[UIColor blackColor] CGColor]
                        inView:self.view
                      vertical:0.4];

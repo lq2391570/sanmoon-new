@@ -645,7 +645,7 @@ FMDatabase *__infoDb = nil;
     [self addSecondnum];
     [self addThirdView];
 }
-//添加卡号确认页面
+//添加会员号确认页面
 - (void)addThirdView
 {
     //    [self.mutabledate addObject:[self.datesource objectAtIndex:0]];
@@ -654,9 +654,9 @@ FMDatabase *__infoDb = nil;
     buttonview.frame = CGRectMake(0, 0, 1024, 768);
     buttonview.backgroundColor = [UIColor colorWithWhite:1 alpha:0.8];
     
-    //添加卡号
+    //添加会员号
     UILabel * cardNumberLable = [[UILabel alloc] initWithFrame:CGRectMake(400, 300, 80, 40)];
-    cardNumberLable.text = @"卡号：";
+    cardNumberLable.text = @"会员号：";
     [buttonview addSubview:cardNumberLable];
     
     //添加密码
@@ -664,11 +664,11 @@ FMDatabase *__infoDb = nil;
     passWordLable.text = @"密码：";
     [buttonview addSubview:passWordLable];
     
-    //添加卡号输入框
+    //添加会员号输入框
     UITextField * cardNumbertextfiled = [[UITextField alloc] initWithFrame:CGRectMake(470, 300, 200, 40)];
     cardNumbertextfiled.backgroundColor = [UIColor redColor];
     cardNumbertextfiled.keyboardType = UIKeyboardTypeNumberPad;
-    cardNumbertextfiled.placeholder = @"请输入卡号";
+    cardNumbertextfiled.placeholder = @"请输入会员号";
     cardNumbertextfiled.clearsOnBeginEditing = YES;
     cardNumbertextfiled.clearButtonMode = UITextFieldViewModeWhileEditing;
     cardNumbertextfiled.tag = 1006;

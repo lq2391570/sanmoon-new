@@ -611,7 +611,7 @@
 
 
 
-//精确查询接口（卡号）
+//精确查询接口（会员号）
 - (void)getGuestInfoWithName2:(NSString *)name withUsername:(NSString *)username withPwd:(NSString *)pwd cardNum:(NSString *)cardNum withCompleteBlock:(void (^) (GusetListRootClass *bassClass))completeBlock
 {
 //    NSURL *url = [NSURL URLWithString:QueryName];

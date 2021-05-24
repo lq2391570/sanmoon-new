@@ -40,11 +40,18 @@
 #warning 客户状态01.空账户；02.正常账户；03.余零账户；04.冻结账户；05.新客账户
     for (int i = 0; i<self.array.count; i++) {
         GusetListData * customer = [self.array objectAtIndex:i];
-        if ([customer.gueststate integerValue] == 2 || [customer.gueststate integerValue] == 3) {
+        if (([customer.gueststate integerValue] == 2 || [customer.gueststate integerValue] == 3) && [customer.usid isEqualToString:[self getStoresID]]) {
             [_tempArray addObject:customer];
         }
     }
     
+}
+- (NSString *)getStoresID
+{
+    NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
+    NSString * uName = [prefs objectForKey:@"name"];
+    NSLog(@"storeId=%@",uName);
+    return uName;
 }
 
 - (void)didReceiveMemoryWarning
@@ -99,8 +106,9 @@
     GusetListData * customer = [_tempArray objectAtIndex:indexPath.row - 1];
     custom.cardLab.text = customer.gid;
     custom.nameLab.text = customer.gname;
+    custom.phoneNumLabel.text = customer.gexpphone;
     custom.selectionStyle = UITableViewCellSelectionStyleBlue;
-    custom.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+//    custom.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     //if ([order.type isEqualToString:@"7"])
     //{
     
@@ -137,6 +145,7 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
    // int section = indexPath.section;
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
     if (indexPath.row == 0)
     {
         
@@ -149,6 +158,7 @@
             GusetListData * customer = [_tempArray objectAtIndex:indexPath.row -1];
             MemberController * member  = [[MemberController alloc] init];
             member.query = customer.gid;
+            member.phoneNum = customer.gexpphone;
             member.cardState=customer.gueststate;
             if (customer.gid!=nil) {
                 [self.navigationController pushViewController:member animated:YES];
